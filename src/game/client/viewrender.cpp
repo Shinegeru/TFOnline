@@ -66,7 +66,7 @@
 #include "viewpostprocess.h"
 #include "viewdebug.h"
 
-#if defined USES_ECON_ITEMS
+#if defined ( USES_ECON_ITEMS )
 #include "econ_wearable.h"
 #endif
 
@@ -5339,7 +5339,7 @@ void MaybeInvalidateLocalPlayerAnimation()
 			pWeapon->InvalidateBoneCache();
 		}
 
-#if defined USES_ECON_ITEMS
+#if defined ( USES_ECON_ITEMS ) 
 		// ...and all the things you're wearing/holding/etc
 		int NumWearables = pPlayer->GetNumWearables();
 		for ( int i = 0; i < NumWearables; ++i )

@@ -7,7 +7,6 @@
 #include "tf_playerclass_shared.h"
 #include "materialsystem/imaterialsystemhardwareconfig.h"
 #include "tier2/tier2.h"
-#include "baseplayer_shared.h"
 
 
 #define TF_CLASS_UNDEFINED_FILE			""
@@ -21,10 +20,6 @@
 #define TF_CLASS_SPY_FILE				"scripts/playerclasses/spy"
 #define TF_CLASS_ENGINEER_FILE			"scripts/playerclasses/engineer"
 #define TF_CLASS_CIVILIAN_FILE			"scripts/playerclasses/civilian"
-
-#ifdef CLIENT_DLL
-extern bool UseHWMorphModels();
-#endif
 
 const char *s_aPlayerClassFiles[] =
 {
@@ -43,6 +38,10 @@ const char *s_aPlayerClassFiles[] =
 
 TFPlayerClassData_t s_aTFPlayerClassData[TF_CLASS_COUNT_ALL];
 
+#ifdef CLIENT_DLL
+extern bool UseHWMorphModels();
+#endif
+
 //-----------------------------------------------------------------------------
 // Purpose: Constructor
 //-----------------------------------------------------------------------------
@@ -51,7 +50,6 @@ TFPlayerClassData_t::TFPlayerClassData_t()
 	m_szClassName[0] = '\0';
 	m_szModelName[0] = '\0';
 	m_szHWMModelName[0] = '\0';
-	m_szModelHandsName[0] = '\0';
 	m_szLocalizableName[0] = '\0';
 	m_flMaxSpeed = 0.0f;
 	m_nMaxHealth = 0;
@@ -144,10 +142,11 @@ void TFPlayerClassData_t::ParseData( KeyValues *pKeyValuesData )
 	Q_strncpy( m_szClassName, pKeyValuesData->GetString( "name" ), TF_NAME_LENGTH );
 
 	// Load the high res model or the lower res model.
-	Q_strncpy( m_szHWMModelName, pKeyValuesData->GetString( "model_hwm" ), TF_NAME_LENGTH );
+	if ( !IsX360() )
+	{
+		Q_strncpy( m_szHWMModelName, pKeyValuesData->GetString( "model_hwm" ), TF_NAME_LENGTH );
+	}
 	Q_strncpy( m_szModelName, pKeyValuesData->GetString( "model" ), TF_NAME_LENGTH );
-	// We're getting the c_model, but we're not using it anywhere yet
-	Q_strncpy( m_szModelHandsName, pKeyValuesData->GetString("model_hands"), TF_NAME_LENGTH);
 	Q_strncpy( m_szLocalizableName, pKeyValuesData->GetString( "localize_name" ), TF_NAME_LENGTH );
 
 	m_flMaxSpeed = pKeyValuesData->GetFloat( "speed_max" );
@@ -212,7 +211,6 @@ void InitPlayerClasses( void )
 	Assert( pClassData );
 	Q_strncpy( pClassData->m_szClassName, "undefined", TF_NAME_LENGTH );
 	Q_strncpy( pClassData->m_szModelName, "models/player/scout.mdl", TF_NAME_LENGTH );	// Undefined players still need a model
-	//Q_strncpy( pClassData->m_szModelHandsName, "models/player/scout.mdl", TF_NAME_LENGTH);	// Undefined players still need a model
 	Q_strncpy( pClassData->m_szLocalizableName, "undefined", TF_NAME_LENGTH );
 
 	// Initialize the classes.

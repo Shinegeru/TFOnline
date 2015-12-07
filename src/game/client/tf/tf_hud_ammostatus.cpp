@@ -60,6 +60,8 @@ CTFHudWeaponAmmo::CTFHudWeaponAmmo( const char *pElementName ) : CHudElement( pE
 	m_pNoClip = NULL;
 	m_pNoClipShadow = NULL;
 
+	m_pWeaponBucket = NULL;
+
 	m_nAmmo	= -1;
 	m_nAmmo2 = -1;
 	m_hCurrentActiveWeapon = NULL;
@@ -74,6 +76,8 @@ void CTFHudWeaponAmmo::Reset()
 	m_flNextThink = gpGlobals->curtime + 0.05f;
 }
 
+ConVar tf2c_ammobucket("tf2c_ammobucket", "0", FCVAR_ARCHIVE, "Shows weapon bucket in the ammo section. 1 = ON, 0 = OFF.");
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
@@ -84,14 +88,16 @@ void CTFHudWeaponAmmo::ApplySchemeSettings( IScheme *pScheme )
 	// load control settings...
 	LoadControlSettings( "resource/UI/HudAmmoWeapons.res" );
 
-	m_pInClip = dynamic_cast<CExLabel *>(FindChildByName("AmmoInClip"));
-	m_pInClipShadow = dynamic_cast<CExLabel *>(FindChildByName("AmmoInClipShadow"));
+	m_pInClip = dynamic_cast<CTFLabel *>(FindChildByName("AmmoInClip"));
+	m_pInClipShadow = dynamic_cast<CTFLabel *>(FindChildByName("AmmoInClipShadow"));
 
-	m_pInReserve = dynamic_cast<CExLabel *>(FindChildByName("AmmoInReserve"));
-	m_pInReserveShadow = dynamic_cast<CExLabel *>(FindChildByName("AmmoInReserveShadow"));
+	m_pInReserve = dynamic_cast<CTFLabel *>(FindChildByName("AmmoInReserve"));
+	m_pInReserveShadow = dynamic_cast<CTFLabel *>(FindChildByName("AmmoInReserveShadow"));
 
-	m_pNoClip = dynamic_cast<CExLabel *>(FindChildByName("AmmoNoClip"));
-	m_pNoClipShadow = dynamic_cast<CExLabel *>(FindChildByName("AmmoNoClipShadow"));
+	m_pNoClip = dynamic_cast<CTFLabel *>(FindChildByName("AmmoNoClip"));
+	m_pNoClipShadow = dynamic_cast<CTFLabel *>(FindChildByName("AmmoNoClipShadow"));
+
+	m_pWeaponBucket = dynamic_cast<ImagePanel *>(FindChildByName("WeaponBucket"));
 
 	m_nAmmo	= -1;
 	m_nAmmo2 = -1;
@@ -168,11 +174,43 @@ void CTFHudWeaponAmmo::UpdateAmmoLabels( bool bPrimary, bool bReserve, bool bNoC
 void CTFHudWeaponAmmo::OnThink()
 {
 	// Get the player and active weapon.
-	C_BasePlayer *pPlayer = C_BasePlayer::GetLocalPlayer();
-	C_BaseCombatWeapon *pWeapon = GetActiveWeapon();
+	C_TFPlayer *pPlayer = C_TFPlayer::GetLocalTFPlayer();
+	if ( !pPlayer )
+		return;
+
+	C_BaseCombatWeapon *pWeapon = pPlayer->GetActiveWeapon();
 
 	if ( m_flNextThink < gpGlobals->curtime )
 	{
+		bool bShowIcon = false;
+
+		if ( tf2c_ammobucket.GetBool() && pWeapon )
+		{
+			// FIXME: need to add GRN and YLW icons to CTFWeaponInfo.
+			const CHudTexture *pTexture = pWeapon->GetSpriteInactive(); // red team
+			if ( pPlayer )
+			{
+				if ( pPlayer->GetTeamNumber() == TF_TEAM_BLUE )
+				{
+					pTexture = pWeapon->GetSpriteActive();
+				}
+			}
+
+			if ( pTexture )
+			{
+				char szImage[64];
+				Q_snprintf( szImage, sizeof( szImage ), "../%s", pTexture->szTextureFile );
+			
+				if ( m_pWeaponBucket )
+					m_pWeaponBucket->SetImage( szImage );
+				
+				bShowIcon = true;
+			}
+		}
+
+		if ( m_pWeaponBucket )
+			m_pWeaponBucket->SetVisible( bShowIcon );
+
 		hudlcd->SetGlobalStat( "(weapon_print_name)", pWeapon ? pWeapon->GetPrintName() : " " );
 		hudlcd->SetGlobalStat( "(weapon_name)", pWeapon ? pWeapon->GetName() : " " );
 

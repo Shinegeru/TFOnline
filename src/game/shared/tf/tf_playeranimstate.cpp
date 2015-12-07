@@ -112,9 +112,7 @@ Activity CTFPlayerAnimState::TranslateActivity( Activity actDesired )
 	Activity translateActivity = BaseClass::TranslateActivity( actDesired );
 
 	if ( GetTFPlayer()->GetActiveWeapon() )
-	{
 		translateActivity = GetTFPlayer()->GetActiveWeapon()->ActivityOverride( translateActivity, false );
-	}
 
 	return translateActivity;
 }
@@ -390,7 +388,14 @@ void CTFPlayerAnimState::DoAnimationEvent( PlayerAnimEvent_t event, int nData )
 			m_bInAirWalk = false;
 
 			// Player the air dash gesture.
-			RestartGesture( GESTURE_SLOT_JUMP, ACT_MP_DOUBLEJUMP );
+			if (GetBasePlayer()->GetFlags() & FL_DUCKING)
+			{
+				RestartGesture( GESTURE_SLOT_JUMP, ACT_MP_DOUBLEJUMP_CROUCH );
+			}
+			else
+			{
+				RestartGesture( GESTURE_SLOT_JUMP, ACT_MP_DOUBLEJUMP );
+			}
 			break;
 		}
 	default:

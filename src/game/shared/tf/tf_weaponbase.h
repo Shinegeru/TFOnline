@@ -38,6 +38,8 @@
 
 #define MAX_TRACER_NAME		128
 
+CTFWeaponInfo *GetTFWeaponInfo( int iWeapon );
+
 class CTFPlayer;
 class CBaseObject;
 class CTFWeaponBaseGrenadeProj;
@@ -149,8 +151,7 @@ class CTFWeaponBase : public CBaseCombatWeapon
 
 	virtual void SetWeaponVisible( bool visible );
 
-	virtual acttable_t *ActivityList( void );
-	virtual int ActivityListCount( void );
+	virtual acttable_t *ActivityList( int &iActivityCount );
 	static acttable_t m_acttablePrimary[];
 	static acttable_t m_acttableSecondary[];
 	static acttable_t m_acttableMelee[];
@@ -185,8 +186,7 @@ class CTFWeaponBase : public CBaseCombatWeapon
 	virtual const char *GetMuzzleFlashEffectName_3rd( void ) { return NULL; }
 	virtual const char *GetMuzzleFlashEffectName_1st( void ) { return NULL; }
 	virtual const char *GetMuzzleFlashModel( void );
-	virtual float		GetMuzzleFlashModelLifetime( void );
-	virtual float		GetMuzzleFlashModelScale( void );
+	virtual float	GetMuzzleFlashModelLifetime( void );
 	virtual const char *GetMuzzleFlashParticleEffect( void );
 
 	virtual const char	*GetTracerType( void );

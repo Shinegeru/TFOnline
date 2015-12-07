@@ -425,7 +425,7 @@ CTFRoundInfo::CTFRoundInfo( IViewPort *pViewPort ) : Frame( NULL, PANEL_ROUNDINF
 	SetKeyBoardInputEnabled( true );
 	SetMouseInputEnabled( true );
 
-	m_pTitle = new CExLabel(this, "RoundTitle", " ");
+	m_pTitle = new CTFLabel( this, "RoundTitle", " " );
 	m_pMapImage = new ImagePanel( this, "MapImage" );
 
 #ifdef _X360

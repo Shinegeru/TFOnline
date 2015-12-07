@@ -90,7 +90,7 @@ private:
 	CTFTeamButton	*m_pRedTeamButton;
 	CTFTeamButton	*m_pAutoTeamButton;
 	CTFTeamButton	*m_pSpecTeamButton;
-	CExLabel		*m_pSpecLabel;
+	CTFLabel		*m_pSpecLabel;
 
 #ifdef _X360
 	CTFFooter		*m_pFooter;

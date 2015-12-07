@@ -88,7 +88,7 @@ class CNavArea;
 class CHintSystem;
 class CAI_Expresser;
 
-#if defined USES_ECON_ITEMS
+#if defined ( USES_ECON_ITEMS ) || defined ( TF_CLASSIC )
 class CEconWearable;
 #endif // USES_ECON_ITEMS
 
@@ -415,7 +415,7 @@ public:
 	virtual bool			Weapon_ShouldSetLast( CBaseCombatWeapon *pOldWeapon, CBaseCombatWeapon *pNewWeapon ) { return true; }
 	virtual bool			Weapon_ShouldSelectItem( CBaseCombatWeapon *pWeapon );
 	void					Weapon_DropSlot( int weaponSlot );
-	CBaseCombatWeapon		*Weapon_GetLast( void ) { return m_hLastWeapon.Get(); }
+	CBaseCombatWeapon		*GetLastWeapon( void ) { return m_hLastWeapon.Get(); }
 
 	virtual void			OnMyWeaponFired( CBaseCombatWeapon *weapon );	// call this when this player fires a weapon to allow other systems to react
 	virtual float			GetTimeSinceWeaponFired( void ) const;			// returns the time, in seconds, since this player fired a weapon
@@ -614,11 +614,11 @@ public:
 
 	virtual bool			ShouldAnnounceAchievement( void );
 
-#if defined USES_ECON_ITEMS
+#if defined ( USES_ECON_ITEMS )
 	// Wearables
 	virtual void			EquipWearable( CEconWearable *pItem );
 	virtual void			RemoveWearable( CEconWearable *pItem );
-	void					PlayWearableAnimsForPlaybackEvent( wearableanimplayback_t iPlayback );
+	//void					PlayWearableAnimsForPlaybackEvent( wearableanimplayback_t iPlayback ); Commented until we get wearableanimplayback_t -danielmm8888
 #endif
 
 public:
@@ -735,6 +735,8 @@ public:
 	bool	IsPredictingWeapons( void ) const; 
 	int		CurrentCommandNumber() const;
 	const CUserCmd *GetCurrentUserCommand() const;
+	int		GetLockViewanglesTickNumber() const { return m_iLockViewanglesTickNumber; }
+	QAngle	GetLockViewanglesData() const { return m_qangLockViewangles; }
 
 	int		GetFOV( void );														// Get the current FOV value
 	int		GetDefaultFOV( void ) const;										// Default FOV if not specified otherwise
@@ -889,9 +891,10 @@ public:
 
 	void		AdjustDrownDmg( int nAmount );
 
-#if defined USES_ECON_ITEMS
+#if defined ( USES_ECON_ITEMS )
 	CEconWearable			*GetWearable( int i ) { return m_hMyWearables[i]; }
-	int						GetNumWearables( void ) { return m_hMyWearables.Count(); }
+	const CEconWearable		*GetWearable( int i ) const { return m_hMyWearables[i]; }
+	int						GetNumWearables( void ) const { return m_hMyWearables.Count(); }
 #endif
 
 private:
@@ -1058,12 +1061,14 @@ protected:
 	// Last received usercmd (in case we drop a lot of packets )
 	CUserCmd				m_LastCmd;
 	CUserCmd				*m_pCurrentCommand;
+	int						m_iLockViewanglesTickNumber;
+	QAngle					m_qangLockViewangles;
 
 	float					m_flStepSoundTime;	// time to check for next footstep sound
 
 	bool					m_bAllowInstantSpawn;
 
-#if defined USES_ECON_ITEMS
+#if defined ( USES_ECON_ITEMS )
 	// Wearables
 	CUtlVector<CHandle<CEconWearable > >	m_hMyWearables;
 #endif

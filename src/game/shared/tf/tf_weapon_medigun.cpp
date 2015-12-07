@@ -198,7 +198,7 @@ bool CWeaponMedigun::Deploy( void )
 		CTFPlayer *pOwner = ToTFPlayer( GetOwnerEntity() );
 		if ( m_bChargeRelease && pOwner )
 		{
-			pOwner->m_Shared.RecalculateInvuln();
+			pOwner->m_Shared.RecalculateChargeEffects();
 		}
 #endif
 
@@ -229,7 +229,7 @@ bool CWeaponMedigun::Holster( CBaseCombatWeapon *pSwitchingTo )
 	CTFPlayer *pOwner = ToTFPlayer( GetOwnerEntity() );
 	if ( pOwner )
 	{
-		pOwner->m_Shared.RecalculateInvuln( true );
+		pOwner->m_Shared.RecalculateChargeEffects( true );
 	}
 #endif
 
@@ -340,6 +340,33 @@ bool CWeaponMedigun::CouldHealTarget( CBaseEntity *pTarget )
 
 	return false;
 }
+
+// Now make sure there isn't something other than team players in the way.
+class CMedigunFilter : public CTraceFilterSimple
+{
+public:
+	CMedigunFilter( CBaseEntity *pShooter ) : CTraceFilterSimple( pShooter, COLLISION_GROUP_WEAPON )
+	{
+		m_pShooter = pShooter;
+	}
+
+	virtual bool ShouldHitEntity( IHandleEntity *pHandleEntity, int contentsMask )
+	{
+		// If it hit an edict the isn't the target and is on our team, then the ray is blocked.
+		CBaseEntity *pEnt = static_cast<CBaseEntity*>(pHandleEntity);
+
+		// Ignore collisions with the shooter
+		if ( pEnt == m_pShooter )
+			return false;
+		
+		if ( pEnt->GetTeam() == m_pShooter->GetTeam() )
+			return false;
+
+		return CTraceFilterSimple::ShouldHitEntity( pHandleEntity, contentsMask );
+	}
+
+	CBaseEntity	*m_pShooter;
+};
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -512,7 +539,7 @@ bool CWeaponMedigun::FindAndHealTargets( void )
 				pTFPlayer->m_Shared.Heal( pOwner, GetHealRate() );
 			}
 
-			pTFPlayer->m_Shared.RecalculateInvuln( false );
+			pTFPlayer->m_Shared.RecalculateChargeEffects( false );
 		}
 
 		if ( m_flReleaseStartedAt && m_flReleaseStartedAt < (gpGlobals->curtime + 0.2) )
@@ -607,7 +634,7 @@ void CWeaponMedigun::DrainCharge( void )
 			}
 			*/
 
-			pOwner->m_Shared.RecalculateInvuln();
+			pOwner->m_Shared.RecalculateChargeEffects();
 #endif
 		}
 	}
@@ -723,7 +750,7 @@ void CWeaponMedigun::RemoveHealingTarget( bool bStopHealingSelf )
 			CTFPlayer *pOwner = ToTFPlayer( GetOwnerEntity() );
 			CTFPlayer *pTFPlayer = ToTFPlayer( m_hHealingTarget );
 			pTFPlayer->m_Shared.StopHealing( pOwner );
-			pTFPlayer->m_Shared.RecalculateInvuln( false );
+			pTFPlayer->m_Shared.RecalculateChargeEffects( false );
 
 			pOwner->SpeakConceptIfAllowed( MP_CONCEPT_MEDIC_STOPPEDHEALING, pTFPlayer->IsAlive() ? "healtarget:alive" : "healtarget:dead" );
 			pTFPlayer->SpeakConceptIfAllowed( MP_CONCEPT_HEALTARGET_STOPPEDHEALING );
@@ -848,14 +875,14 @@ void CWeaponMedigun::SecondaryAttack( void )
 
 #ifdef GAME_DLL
 	CTF_GameStats.Event_PlayerInvulnerable( pOwner );
-	pOwner->m_Shared.RecalculateInvuln();
+	pOwner->m_Shared.RecalculateChargeEffects();
 
 	pOwner->SpeakConceptIfAllowed( MP_CONCEPT_MEDIC_CHARGEDEPLOYED );
 
 	if ( m_hHealingTarget && m_hHealingTarget->IsPlayer() )
 	{
 		CTFPlayer *pTFPlayer = ToTFPlayer( m_hHealingTarget );
-		pTFPlayer->m_Shared.RecalculateInvuln();
+		pTFPlayer->m_Shared.RecalculateChargeEffects();
 		pTFPlayer->SpeakConceptIfAllowed( MP_CONCEPT_HEALTARGET_CHARGEDEPLOYED );
 	}
 

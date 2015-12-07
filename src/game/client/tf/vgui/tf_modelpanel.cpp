@@ -33,6 +33,9 @@
 
 bool UseHWMorphModels();
 
+
+char* ReadAndAllocStringValue( KeyValues *pSub, const char *pName, const char *pFilename = NULL );
+
 using namespace vgui;
 
 DECLARE_BUILD_FACTORY( CModelPanel );
@@ -76,18 +79,13 @@ void CModelPanel::ApplySettings( KeyValues *inResourceData )
 
 	m_nFOV = inResourceData->GetInt( "fov", 54 );
 
-	/////
-	m_bStartFramed = inResourceData->GetInt("start_framed", false);
-	m_bAllowOffscreen = inResourceData->GetInt("allow_offscreen", false);
-	////
-
 	// do we have a valid "model" section in the .res file?
 	for ( KeyValues *pData = inResourceData->GetFirstSubKey() ; pData != NULL ; pData = pData->GetNextKey() )
 	{
 		if ( !Q_stricmp( pData->GetName(), "model" ) )
 		{
 			ParseModelInfo( pData );
-			//m_bPanelDirty = true;
+			m_bPanelDirty = true;
 		}
 	}
 }
@@ -117,11 +115,6 @@ void CModelPanel::ParseModelInfo( KeyValues *inResourceData )
 	m_pModelInfo->m_pszVCD = ReadAndAllocStringValue( inResourceData, "vcd" );
 	m_pModelInfo->m_bUseSpotlight = ( inResourceData->GetInt( "spotlight", 0 ) == 1 );
 	
-	////
-	m_pModelInfo->m_vecFramedOriginOffset.Init(inResourceData->GetFloat("frame_origin_x", 110.0), inResourceData->GetFloat("frame_origin_y", 5.0), inResourceData->GetFloat("frame_origin_z", 5.0));
-	m_pModelInfo->m_vecViewportOffset.Init();
-	/////
-
 	for ( KeyValues *pData = inResourceData->GetFirstSubKey(); pData != NULL; pData = pData->GetNextKey() )
 	{
 		if ( !Q_stricmp( pData->GetName(), "animation" ) )
@@ -439,7 +432,7 @@ void CModelPanel::Paint()
 	int x, y, w, h;
 
 	GetBounds( x, y, w, h );
-	ParentLocalToScreen(x, y);
+	LocalToScreen( x, y );
 
 	if ( x < 0 )
 	{
@@ -449,8 +442,7 @@ void CModelPanel::Paint()
 	}
 
 	Vector vecExtraModelOffset( 0, 0, 0 );
-	//float flWidthRatio = engine->GetScreenAspectRatio() / ( 4.0f / 3.0f );
-	float flWidthRatio = ((float)w / (float)h) / (4.0f / 3.0f);
+	float flWidthRatio = engine->GetScreenAspectRatio() / ( 4.0f / 3.0f );
 
 	// is this a player model?
 	if ( Q_strstr( GetModelName(), "models/player/" ) )
@@ -476,22 +468,10 @@ void CModelPanel::Paint()
 		m_hModel->FrameAdvance( gpGlobals->frametime );
 	}
 
-	//////
-	CMatRenderContextPtr pRenderContext(materials);
-
-	// figure out what our viewport is right now 
-	int viewportX, viewportY, viewportWidth, viewportHeight;
-	pRenderContext->GetViewport(viewportX, viewportY, viewportWidth, viewportHeight);
-
-	//////
-
 	// Now draw it.
 	CViewSetup view;
-	view.x = x + m_pModelInfo->m_vecViewportOffset.x + viewportX; // we actually want to offset by the  
-	view.y = y + m_pModelInfo->m_vecViewportOffset.y + viewportY; // viewport origin here because Push3DView expects global coords below 
-
-	//view.x = x;
-	//view.y = y;
+	view.x = x;
+	view.y = y;
 	view.width = w;
 	view.height = h;
 
@@ -505,7 +485,7 @@ void CModelPanel::Paint()
 	view.zNear = VIEW_NEARZ;
 	view.zFar = 1000;
 
-//	CMatRenderContextPtr pRenderContext( materials );
+	CMatRenderContextPtr pRenderContext( materials );
 
 	// Not supported by queued material system - doesn't appear to be necessary
 //	ITexture *pLocalCube = pRenderContext->GetLocalCubemap();
@@ -570,49 +550,41 @@ void CModelPanel::Paint()
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-int CModelPanel::FindAnimByName(const char *pszName)
-{
-	// first try to find the sequence using pszName as the friendly name 
-	for (int iIndex = 0; iIndex < m_pModelInfo->m_Animations.Count(); iIndex++)
-	{
-		CModelPanelModelAnimation *pAnimation = m_pModelInfo->m_Animations[iIndex];
-		if (FStrEq(pAnimation->m_pszName, pszName))
-			return iIndex;
-	}
-
-	return -1;
-}
-
-//-----------------------------------------------------------------------------
-// Purpose: 
-//-----------------------------------------------------------------------------
 bool CModelPanel::SetSequence( const char *pszName )
 {
 	bool bRetVal = false;
 	const char *pszAnim = NULL;
+	int iIndex = 0;
 
 	MDLCACHE_CRITICAL_SECTION();
 
-	if (m_pModelInfo)
+	if ( m_pModelInfo )
 	{
-		int iIndex = FindAnimByName(pszName);
-		if (iIndex != -1)
+		// first try to find the sequence using pszName as the friendly name 
+		for ( iIndex = 0 ; iIndex <  m_pModelInfo->m_Animations.Count() ; iIndex++ )
 		{
-			pszAnim = m_pModelInfo->m_Animations[iIndex]->m_pszSequence;
+			CModelPanelModelAnimation *pAnimation = m_pModelInfo->m_Animations[ iIndex ];
+			if ( FStrEq( pAnimation->m_pszName, pszName ) )
+			{
+				pszAnim = pAnimation->m_pszSequence;
+				break;
+			}
 		}
-		else
+
+		// did we find a match?
+		if ( !pszAnim )
 		{
 			// if not, just use the passed name as the sequence
 			pszAnim = pszName;
 		}
 
-		if (m_hModel.Get())
+		if ( m_hModel.Get() )
 		{
-			int sequence = m_hModel->LookupSequence(pszAnim);
-			if (sequence != ACT_INVALID)
+			int sequence = m_hModel->LookupSequence( pszAnim );
+			if ( sequence != ACT_INVALID )
 			{
-				m_hModel->ResetSequence(sequence);
-				m_hModel->SetCycle(0);
+				m_hModel->ResetSequence( sequence );
+				m_hModel->SetCycle( 0 );
 
 				bRetVal = true;
 			}

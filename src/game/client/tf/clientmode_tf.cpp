@@ -14,14 +14,14 @@
 #include "clientmode_tf.h"
 #include "cdll_client_int.h"
 #include "iinput.h"
-#include "vgui/isurface.h"
-#include "vgui/ipanel.h"
-#include "GameUI/igameui.h"
+#include "vgui/ISurface.h"
+#include "vgui/IPanel.h"
+#include "GameUI/IGameUI.h"
 #include <vgui_controls/AnimationController.h>
 #include "ivmodemanager.h"
-#include "BuyMenu.h"
+#include "buymenu.h"
 #include "filesystem.h"
-#include "vgui/ivgui.h"
+#include "vgui/IVGui.h"
 #include "hud_chat.h"
 #include "view_shared.h"
 #include "view.h"
@@ -31,7 +31,7 @@
 #include "dlight.h"
 #include <imapoverview.h>
 #include "c_playerresource.h"
-#include <keyvalues.h>
+#include <KeyValues.h>
 #include "text_message.h"
 #include "panelmetaclassmgr.h"
 #include "c_tf_player.h"
@@ -57,6 +57,7 @@ void HUDMinModeChangedCallBack( IConVar *var, const char *pOldString, float flOl
 {
 	engine->ExecuteClientCmd( "hud_reloadscheme" );
 }
+
 ConVar cl_hud_minmode( "cl_hud_minmode", "0", FCVAR_ARCHIVE, "Set to 1 to turn on the advanced minimalist HUD mode.", HUDMinModeChangedCallBack );
 
 IClientMode *g_pClientMode = NULL;
@@ -77,10 +78,13 @@ public:
 static CTFModeManager g_ModeManager;
 IVModeManager *modemanager = ( IVModeManager * )&g_ModeManager;
 
-CLIENTEFFECT_REGISTER_BEGIN(PrecachePostProcessingEffectsGlow)
-CLIENTEFFECT_MATERIAL("dev/glow_color")
-CLIENTEFFECT_MATERIAL("dev/halo_add_to_screen")
-CLIENTEFFECT_REGISTER_END_CONDITIONAL(engine->GetDXSupportLevel() >= 90)
+CLIENTEFFECT_REGISTER_BEGIN( PrecachePostProcessingEffectsGlow )
+	CLIENTEFFECT_MATERIAL( "dev/glow_blur_x" )
+	CLIENTEFFECT_MATERIAL( "dev/glow_blur_y" )
+	CLIENTEFFECT_MATERIAL( "dev/glow_color" )
+	CLIENTEFFECT_MATERIAL( "dev/glow_downsample" )
+	CLIENTEFFECT_MATERIAL( "dev/halo_add_to_screen" )
+CLIENTEFFECT_REGISTER_END_CONDITIONAL(	engine->GetDXSupportLevel() >= 90 )
 
 // --------------------------------------------------------------------------------- //
 // CTFModeManager implementation.
@@ -234,6 +238,17 @@ bool ClientModeTFNormal::ShouldDrawViewModel()
 	}
 
 	return true;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+bool ClientModeTFNormal::DoPostScreenSpaceEffects( const CViewSetup *pSetup )
+{
+	if ( !IsInFreezeCam() )
+		g_GlowObjectManager.RenderGlowEffects( pSetup, 0 );
+
+	return BaseClass::DoPostScreenSpaceEffects( pSetup );
 }
 
 int ClientModeTFNormal::GetDeathMessageStartHeight( void )

@@ -48,7 +48,7 @@
 #include "tf_mapinfomenu.h"
 #include "tf_roundinfo.h"
 
-#include "tf_overview.h"
+//#include "tf_overview.h"
 
 /*
 CON_COMMAND( spec_help, "Show spectator help screen")

@@ -21,12 +21,14 @@
 #include "hintsystem.h"
 #include "c_playerattachedmodel.h"
 #include "iinput.h"
+#include "tf_weapon_medigun.h"
 
 class C_MuzzleFlashModel;
 class C_BaseObject;
 
 extern ConVar tf_medigun_autoheal;
 extern ConVar cl_autorezoom;
+extern ConVar cl_autoreload;
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -60,7 +62,7 @@ public:
 
 	virtual bool CreateMove( float flInputSampleTime, CUserCmd *pCmd );
 
-	virtual bool				IsAllowedToSwitchWeapons( void );
+	virtual bool IsAllowedToSwitchWeapons( void );
 
 	virtual void ClientThink();
 
@@ -154,8 +156,7 @@ public:
 
 	void			StartBurningSound( void );
 	void			StopBurningSound( void );
-	void			OnAddTeleported( void );
-	void			OnRemoveTeleported( void );
+	void			UpdateRecentlyTeleportedEffect( void );
 
 	bool			CanShowClassMenu( void );
 
@@ -167,12 +168,13 @@ public:
 
 	CUtlVector<EHANDLE>		*GetSpawnedGibs( void ) { return &m_hSpawnedGibs; }
 
-	const Vector& 	GetClassEyeHeight( void );
+	Vector 			GetClassEyeHeight( void );
 
 	void			ForceUpdateObjectHudState( void );
 
 	bool			GetMedigunAutoHeal( void ){ return tf_medigun_autoheal.GetBool(); }
 	bool			ShouldAutoRezoom( void ){ return cl_autorezoom.GetBool(); }
+	bool			ShouldAutoReload( void ){ return cl_autoreload.GetBool(); }
 
 public:
 	// Shared functions
@@ -193,14 +195,19 @@ public:
 	virtual bool		Weapon_ShouldSetLast( CBaseCombatWeapon *pOldWeapon, CBaseCombatWeapon *pNewWeapon );
 	virtual	bool		Weapon_Switch( C_BaseCombatWeapon *pWeapon, int viewmodelindex = 0 );
 
+	CWeaponMedigun		*GetMedigun( void );
 	CTFWeaponBase		*Weapon_OwnsThisID( int iWeaponID );
 	CTFWeaponBase		*Weapon_GetWeaponByType( int iType );
+	virtual bool		Weapon_SlotOccupied( CBaseCombatWeapon *pWeapon );
+	virtual CBaseCombatWeapon *Weapon_GetSlot( int slot ) const;
 
 	virtual void		GetStepSoundVelocities( float *velwalk, float *velrun );
 	virtual void		SetStepSoundTime( stepsoundtimes_t iStepSoundTime, bool bWalking );
 
 	bool	DoClassSpecialSkill( void );
 	bool	CanGoInvisible( void );
+
+	virtual CBaseEntity *GetAttributeOwner() { return NULL; }
 
 public:
 	// Ragdolls.
@@ -239,6 +246,8 @@ private:
 
 	void OnPlayerClassChange( void );
 	void UpdatePartyHat( void );
+
+	bool CanLightCigarette( void );
 
 	void InitInvulnerableMaterial( void );
 

@@ -84,7 +84,7 @@ void CTFTextWindow::Reset( void )
 //-----------------------------------------------------------------------------
 void CTFTextWindow::Update()
 {
-	CExLabel *pTitle = dynamic_cast<CExLabel *>(FindChildByName("TFMessageTitle"));
+	CTFLabel *pTitle = dynamic_cast<CTFLabel *>( FindChildByName( "TFMessageTitle" ) );
 	if ( pTitle )
 	{
 		pTitle->SetText( m_szTitle );
@@ -213,7 +213,7 @@ void CTFTextWindow::ShowFile( const char *filename )
 //-----------------------------------------------------------------------------
 void CTFTextWindow::ShowTitleLabel( bool show )
 {
-	CExLabel *pTitle = dynamic_cast<CExLabel *>(FindChildByName("TFMessageTitle"));
+	CTFLabel *pTitle = dynamic_cast<CTFLabel *>( FindChildByName( "TFMessageTitle" ) );
 	if ( pTitle )
 	{
 		pTitle->SetVisible( show );

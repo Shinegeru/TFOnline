@@ -117,7 +117,7 @@ private:
 
 #ifndef _X360
 	CTFImagePanel *m_ClassCountImages[CLASS_COUNT_IMAGES];
-	CExLabel *m_pCountLabel;
+	CTFLabel *m_pCountLabel;
 #endif
 };
 

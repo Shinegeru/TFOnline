@@ -50,8 +50,6 @@ public:
 private:
 	bool	m_bActive;
 	int		m_iOriginalTeam;
-	
-	bool	m_bAllowFlag;
 
 	CUtlVector< CHandle<CFuncRespawnRoomVisualizer> >	m_hVisualizers;
 };

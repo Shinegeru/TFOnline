@@ -97,9 +97,11 @@ BEGIN_NETWORK_TABLE_NOBASE( CObjectSentrygun, DT_SentrygunLocalData )
 END_NETWORK_TABLE()
 
 IMPLEMENT_SERVERCLASS_ST( CObjectSentrygun, DT_ObjectSentrygun )
+	SendPropInt( SENDINFO(m_iUpgradeLevel), 3 ),
 	SendPropInt( SENDINFO(m_iAmmoShells), 9, SPROP_CHANGES_OFTEN ),
 	SendPropInt( SENDINFO(m_iAmmoRockets), 6, SPROP_CHANGES_OFTEN ),
 	SendPropInt( SENDINFO(m_iState), Q_log2( SENTRY_NUM_STATES ) + 1, SPROP_UNSIGNED ),
+	SendPropInt( SENDINFO(m_iUpgradeMetal), 10 ),
 	SendPropDataTable( "SentrygunLocalData", 0, &REFERENCE_SEND_TABLE( DT_SentrygunLocalData ), SendProxy_SendLocalObjectDataTable ),
 END_SEND_TABLE()
 
@@ -141,6 +143,8 @@ void CObjectSentrygun::Spawn()
 	
 	m_takedamage = DAMAGE_YES;
 
+	m_iUpgradeLevel = 1;
+	m_iUpgradeMetal = 0;
 	m_iUpgradeMetalRequired = SENTRYGUN_UPGRADE_METAL;
 
 	SetMaxHealth( SENTRYGUN_MAX_HEALTH );
@@ -1022,7 +1026,7 @@ bool CObjectSentrygun::Fire()
 		info.m_vecSpread = vec3_origin;
 		info.m_flDistance = flDistToTarget + 100;
 		info.m_iAmmoType = m_iAmmoType;
-		info.m_flDamage = tf_sentrygun_damage.GetFloat();
+		info.m_flDamage = tf_sentrygun_damage.GetInt();
 
 		FireBullets( info );
 

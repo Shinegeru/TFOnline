@@ -16,7 +16,7 @@
 using namespace vgui;
 
 DECLARE_BUILD_FACTORY_DEFAULT_TEXT( CTFButton, CTFButton );
-DECLARE_BUILD_FACTORY_DEFAULT_TEXT( CExLabel, CExLabel );
+DECLARE_BUILD_FACTORY_DEFAULT_TEXT( CTFLabel, CTFLabel );
 DECLARE_BUILD_FACTORY( CTFRichText );
 DECLARE_BUILD_FACTORY( CTFFooter );
 
@@ -66,7 +66,7 @@ void CTFButton::ApplySchemeSettings( IScheme *pScheme )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-CExLabel::CExLabel(Panel *parent, const char *name, const char *text) : Label(parent, name, text)
+CTFLabel::CTFLabel( Panel *parent, const char *name, const char *text ) : Label( parent, name, text )
 {
 	m_szColor[0] = '\0';
 }
@@ -74,7 +74,7 @@ CExLabel::CExLabel(Panel *parent, const char *name, const char *text) : Label(pa
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-CExLabel::CExLabel(Panel *parent, const char *name, const wchar_t *wszText) : Label(parent, name, wszText)
+CTFLabel::CTFLabel( Panel *parent, const char *name, const wchar_t *wszText ) : Label( parent, name, wszText )
 {
 	m_szColor[0] = '\0';
 }
@@ -82,7 +82,7 @@ CExLabel::CExLabel(Panel *parent, const char *name, const wchar_t *wszText) : La
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CExLabel::ApplySettings(KeyValues *inResourceData)
+void CTFLabel::ApplySettings( KeyValues *inResourceData )
 {
 	BaseClass::ApplySettings( inResourceData );
 
@@ -94,7 +94,7 @@ void CExLabel::ApplySettings(KeyValues *inResourceData)
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CExLabel::ApplySchemeSettings(IScheme *pScheme)
+void CTFLabel::ApplySchemeSettings( IScheme *pScheme )
 {
 	BaseClass::ApplySchemeSettings( pScheme );
 

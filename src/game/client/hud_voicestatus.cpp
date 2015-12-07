@@ -16,6 +16,11 @@
 #include "voice_common.h"
 #include "vgui_avatarimage.h"
 
+#if defined (TF_CLASSIC_CLIENT)
+#include "tf_gamerules.h"
+#include "c_tf_playerresource.h"
+#endif
+
 ConVar *sv_alltalk = NULL;
 
 //=============================================================================
@@ -251,7 +256,7 @@ void CHudVoiceStatus::OnThink( void )
 					if ( steamapicontext != NULL && steamapicontext->SteamUtils() != NULL )
 					{
 						CSteamID steamIDForPlayer( pi.friendsID, 1, steamapicontext->SteamUtils()->GetConnectedUniverse(), k_EAccountTypeIndividual );
-						activeSpeaker.pAvatar->SetAvatarSteamID(steamIDForPlayer, k_EAvatarSize32x32);
+						activeSpeaker.pAvatar->SetAvatarSteamID(steamIDForPlayer, k_EAvatarSize64x64);
 					}
 				}
 

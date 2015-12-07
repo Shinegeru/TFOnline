@@ -60,7 +60,7 @@ private:
 
 protected:
 	IViewPort			*m_pViewPort;
-	CExLabel			*m_pTitle;
+	CTFLabel			*m_pTitle;
 	CTFRichText			*m_pMapInfo;
 
 #ifdef _X360

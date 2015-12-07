@@ -12,6 +12,7 @@
 #include "tf_player_shared.h"
 #include "tf_playerclass.h"
 #include "entity_tfstart.h"
+#include "tf_weapon_medigun.h"
 
 class CTFPlayer;
 class CTFTeam;
@@ -85,6 +86,7 @@ public:
 	virtual bool		IsReadyToSpawn( void );
 	virtual bool		ShouldGainInstantSpawn( void );
 	virtual void		ResetScores( void );
+	virtual void		PlayerUse( void );
 
 	void				CreateViewModel( int iViewModel = 0 );
 	CBaseViewModel		*GetOffHandViewModel();
@@ -94,8 +96,10 @@ public:
 
 	virtual void		CommitSuicide( bool bExplode = false, bool bForce = false );
 
+	virtual void		LeaveVehicle( const Vector &vecExitPoint, const QAngle &vecExitAngles );
+
 	// Combats
-	virtual void		TraceAttack( const CTakeDamageInfo &info, const Vector &vecDir, trace_t *ptr );
+	virtual void		TraceAttack(const CTakeDamageInfo &info, const Vector &vecDir, trace_t *ptr, CDmgAccumulator *pAccumulator);
 	virtual int			TakeHealth( float flHealth, int bitsDamageType );
 	virtual	void		Event_KilledOther( CBaseEntity *pVictim, const CTakeDamageInfo &info );
 	virtual void		Event_Killed( const CTakeDamageInfo &info );
@@ -200,9 +204,10 @@ public:
 	EHANDLE TeamFortress_GetDisguiseTarget( int nTeam, int nClass );
 
 	void TeamFortress_ClientDisconnected();
-	void TeamFortress_RemoveEverythingFromWorld();
+	void TeamFortress_RemoveEverythingFromWorld( bool bSilent = true );
 	void TeamFortress_RemoveRockets();
 	void TeamFortress_RemovePipebombs();
+	void TeamFortress_RemoveFlames();
 
 	CTFTeamSpawn *GetSpawnPoint( void ){ return m_pSpawnPoint; }
 		
@@ -290,11 +295,14 @@ public:
 	bool ShouldAutoRezoom( void ) { return m_bAutoRezoom; }
 	void SetAutoRezoom( bool bAutoRezoom ) { m_bAutoRezoom = bAutoRezoom; }
 
+	bool ShouldAutoReload( void ) { return m_bAutoReload; }
+	void SetAutoReload( bool bAutoReload ) { m_bAutoReload = bAutoReload; }
+
 	virtual void	ModifyOrAppendCriteria( AI_CriteriaSet& criteriaSet );
 
 	virtual bool CanHearAndReadChatFrom( CBasePlayer *pPlayer );
 
-	const Vector& 	GetClassEyeHeight( void );
+	Vector 	GetClassEyeHeight( void );
 
 	void	UpdateExpression( void );
 	void	ClearExpression( void );
@@ -307,6 +315,7 @@ public:
 	virtual void NoteSpokeVoiceCommand( const char *pszScenePlayed );
 	void	SpeakWeaponFire( int iCustomConcept = MP_CONCEPT_NONE );
 	void	ClearWeaponFireScene( void );
+	void	InputSpeakResponseConcept( inputdata_t &inputdata );
 
 	virtual int DrawDebugTextOverlays( void );
 
@@ -316,6 +325,8 @@ public:
 	virtual int	CalculateTeamBalanceScore( void );
 
 	bool ShouldAnnouceAchievement( void );
+
+	virtual CBaseEntity *GetAttributeOwner() { return NULL; }
 
 public:
 
@@ -357,7 +368,6 @@ public:
 
 	void				ManageRegularWeapons( TFPlayerClassData_t *pData );
 	void				ManageBuilderWeapons( TFPlayerClassData_t *pData );
-	void				ManageGrenades(TFPlayerClassData_t *pData);
 
 	// Taunts.
 	void				Taunt( void );
@@ -381,8 +391,15 @@ public:
 
 	virtual bool			WantsLagCompensationOnEntity( const CBasePlayer	*pPlayer, const CUserCmd *pCmd, const CBitVec<MAX_EDICTS> *pEntityTransmitBits ) const;
 
+	float				MedicGetChargeLevel( void );
+
+	CWeaponMedigun		*GetMedigun( void );
 	CTFWeaponBase		*Weapon_OwnsThisID( int iWeaponID );
 	CTFWeaponBase		*Weapon_GetWeaponByType( int iType );
+
+	bool CalculateAmmoPackPositionAndAngles( CTFWeaponBase *pWeapon, Vector &vecOrigin, QAngle &vecAngles );
+
+	virtual bool		IsDeflectable( void ) { return true; }
 
 private:
 
@@ -408,6 +425,7 @@ private:
 	void				HandleCommand_JoinTeam( const char *pTeamName );
 	void				HandleCommand_JoinClass( const char *pClassName );
 	void				HandleCommand_JoinTeam_NoMenus( const char *pTeamName );
+	void				HandleCommand_JoinTeam_NoKill( const char *pTeamName );
 
 	// Bots.
 	friend void			Bot_Think( CTFPlayer *pBot );
@@ -417,7 +435,6 @@ private:
 	void				PhysObjectWake();
 
 	// Ammo pack.
-	bool CalculateAmmoPackPositionAndAngles( CTFWeaponBase *pWeapon, Vector &vecOrigin, QAngle &vecAngles );
 	void AmmoPackCleanUp( void );
 
 	// State.
@@ -442,8 +459,6 @@ private:
 	bool				PlayDeathAnimation( const CTakeDamageInfo &info, CTakeDamageInfo &info_modified );
 
 	bool				GetResponseSceneFromConcept( int iConcept, char *chSceneBuffer, int numSceneBufferBytes );
-
-	void				ChangeWeapon( TFPlayerClassData_t *pData );
 
 private:
 	// Map introductions
@@ -480,6 +495,7 @@ private:
 	CNetworkQAngle( m_angEyeAngles );					// Copied from EyeAngles() so we can send it to the client.
 
 	CTFPlayerClass		m_PlayerClass;
+
 	CTFPlayerAnimState	*m_PlayerAnimState;
 	int					m_iLastWeaponFireUsercmd;				// Firing a weapon.  Last usercmd we shot a bullet on.
 	int					m_iLastSkin;
@@ -508,8 +524,6 @@ private:
 	DamagerHistory_t m_DamagerHistory[MAX_DAMAGER_HISTORY];	// history of who has damaged this player
 	CUtlVector<float>	m_aBurnOtherTimes;					// vector of times this player has burned others
 
-	bool m_bHudClassAutoKill;
-
 	// Background expressions
 	string_t			m_iszExpressionScene;
 	EHANDLE				m_hExpressionSceneEnt;
@@ -518,8 +532,12 @@ private:
 
 	bool				m_bSpeakingConceptAsDisguisedSpy;
 
+	bool				m_bHudClassAutoKill;
 	bool 				m_bMedigunAutoHeal;
 	bool				m_bAutoRezoom;	// does the player want to re-zoom after each shot for sniper rifles
+	bool				m_bAutoReload;
+
+	COutputEvent		m_OnDeath;
 
 public:
 	bool				SetPowerplayEnabled( bool bOn );

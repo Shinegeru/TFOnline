@@ -109,7 +109,6 @@ public:
 		m_nSkin = -1;
 		m_vecAbsAngles.Init();
 		m_vecOriginOffset.Init();
-		m_vecFramedOriginOffset.Init();
 		m_bUseSpotlight = false;
 	}
 
@@ -144,8 +143,6 @@ public:
 	const char	*m_pszVCD;
 	Vector		m_vecAbsAngles;
 	Vector		m_vecOriginOffset;
-	Vector2D	m_vecViewportOffset;
-	Vector		m_vecFramedOriginOffset;
 	bool		m_bUseSpotlight;
 
 	CUtlVector<CModelPanelModelAnimation*>		m_Animations;
@@ -187,12 +184,9 @@ protected:
 
 private:
 	void InitCubeMaps();
-	int FindAnimByName(const char *pszName);
 
 public:
 	int								m_nFOV;
-	float							m_flFrameDistance;
-	bool							m_bStartFramed;
 	CModelPanelModelInfo			*m_pModelInfo;
 
 	CHandle<CModelPanelModel>				m_hModel;
@@ -203,8 +197,6 @@ public:
 private:
 	bool	m_bPanelDirty;
 	int		m_iDefaultAnimation;
-
-	bool	m_bAllowOffscreen;
 
 	CTextureReference m_DefaultEnvCubemap;
 	CTextureReference m_DefaultHDREnvCubemap;

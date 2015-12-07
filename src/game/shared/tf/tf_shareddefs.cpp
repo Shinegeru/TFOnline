@@ -10,6 +10,8 @@
 #include "takedamageinfo.h"
 #include "tf_gamerules.h"
 
+#define HUD_ALERT_SCRAMBLE_TEAMS 0
+
 //-----------------------------------------------------------------------------
 // Teams.
 //-----------------------------------------------------------------------------
@@ -18,29 +20,15 @@ const char *g_aTeamNames[TF_TEAM_COUNT] =
 	"Unassigned",
 	"Spectator",
 	"Red",
-	"Blue",
-//	"Green",
-//	"Yellow"
+	"Blue"
 };
 
 color32 g_aTeamColors[TF_TEAM_COUNT] = 
 {
-	{ 0, 0, 0, 0 }, // Unassigned
-	{ 0, 0, 0, 0 }, // Spectator
-	{ 255, 0, 0, 0 }, // Red
-	{ 0, 0, 255, 0 }, // Blue
-//	{ 0, 255, 0, 0 }, // Green
-//	{ 255, 255, 0, 0 } // Yellow
-};
-
-color32 g_aTeamSkinColors[TF_TEAM_COUNT] =
-{
-	{ 0, 0, 0, 0 }, // Unassigned
-	{ 0, 0, 0, 0 }, // Spectator
-	{ 255, 63, 53, 0 }, // Red
-	{ 63, 53, 255, 0 }, // Blue
-//	{ 53, 255, 63, 0 }, // Green
-//	{ 255, 255, 120, 0 } // Yellow
+	{ 0, 0, 0, 0 },
+	{ 0, 0, 0, 0 },
+	{ 255, 0, 0, 0 },
+	{ 0, 0, 255, 0 }
 };
 
 //-----------------------------------------------------------------------------
@@ -58,8 +46,7 @@ const char *g_aPlayerClassNames[] =
 	"#TF_Class_Name_HWGuy",
 	"#TF_Class_Name_Pyro",
 	"#TF_Class_Name_Spy",
-	"#TF_Class_Name_Engineer",
-	"#TF_Class_Name_Civilian"
+	"#TF_Class_Name_Engineer"
 };
 
 const char *g_aPlayerClassNames_NonLocalized[] =
@@ -73,36 +60,7 @@ const char *g_aPlayerClassNames_NonLocalized[] =
 	"Heavy",
 	"Pyro",
 	"Spy",
-	"Engineer",
-	"Civilian"
-};
-
-const char *g_aPlayerClassEmblems[] =
-{
-	"../hud/leaderboard_class_scout",
-	"../hud/leaderboard_class_sniper",
-	"../hud/leaderboard_class_soldier",
-	"../hud/leaderboard_class_demo",
-	"../hud/leaderboard_class_medic",
-	"../hud/leaderboard_class_heavy",
-	"../hud/leaderboard_class_pyro",
-	"../hud/leaderboard_class_spy",
-	"../hud/leaderboard_class_engineer",
-	"../hud/leaderboard_class_scout_bat",
-};
-
-const char *g_aPlayerClassEmblemsDead[] =
-{
-	"../hud/leaderboard_class_scout_d",
-	"../hud/leaderboard_class_sniper_d",
-	"../hud/leaderboard_class_soldier_d",
-	"../hud/leaderboard_class_demo_d",
-	"../hud/leaderboard_class_medic_d",
-	"../hud/leaderboard_class_heavy_d",
-	"../hud/leaderboard_class_pyro_d",
-	"../hud/leaderboard_class_spy_d",
-	"../hud/leaderboard_class_engineer_d",
-	"../hud/leaderboard_class_scout_bat_d",
+	"Engineer"
 };
 
 //-----------------------------------------------------------------------------
@@ -113,7 +71,6 @@ const char *g_aGameTypeNames[] =
 	"Undefined",
 	"#Gametype_CTF",
 	"#Gametype_CP",
-	"#Gametype_PL",
 };
 
 //-----------------------------------------------------------------------------
@@ -188,7 +145,6 @@ const char *g_aWeaponNames[] =
 	"TF_WEAPON_SENTRY_ROCKET",
 	"TF_WEAPON_DISPENSER",
 	"TF_WEAPON_INVIS",
-	"TF_WEAPON_FLAG",
 
 	"TF_WEAPON_COUNT",	// end marker, do not add below here
 };
@@ -249,7 +205,6 @@ int g_aWeaponDamageTypes[] =
 	DMG_GENERIC,	// TF_WEAPON_SENTRY_ROCKET
 	DMG_GENERIC,	// TF_WEAPON_DISPENSER
 	DMG_GENERIC,	// TF_WEAPON_INVIS
-	DMG_GENERIC,	// TF_WEAPON_FLAG
 
 	// This is a special entry that must match with TF_WEAPON_COUNT
 	// to protect against updating the weapon list without updating this list
@@ -264,7 +219,6 @@ const char *g_szProjectileNames[] =
 	"projectile_pipe",
 	"projectile_pipe_remote",
 	"projectile_syringe",
-	"projectile_nail",
 };
 
 // these map to the projectiles named in g_szProjectileNames
@@ -275,8 +229,7 @@ int g_iProjectileWeapons[] =
 	TF_WEAPON_ROCKETLAUNCHER,
 	TF_WEAPON_PIPEBOMBLAUNCHER,
 	TF_WEAPON_GRENADELAUNCHER,
-	TF_WEAPON_SYRINGEGUN_MEDIC,
-	TF_WEAPON_NAILGUN
+	TF_WEAPON_SYRINGEGUN_MEDIC
 };
 
 const char *g_pszHintMessages[] =
@@ -620,4 +573,13 @@ bool ClassCanBuild( int iClass, int iObjectType )
 	*/
 
 	return ( iClass == TF_CLASS_ENGINEER );
+}
+
+int ConditionExpiresFast( int nCond )
+{
+	// Damaging conds
+	if ( nCond == TF_COND_BURNING )
+		return true;
+
+	return false;
 }

@@ -74,7 +74,7 @@ private:
 
 	CTFVideoPanel	*m_pVideo;
 	CModelPanel		*m_pModel;
-	CExLabel		*m_pCaptionLabel;
+	CTFLabel		*m_pCaptionLabel;
 
 #ifdef _X360
 	CTFFooter		*m_pFooter;

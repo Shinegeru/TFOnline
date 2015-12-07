@@ -5,6 +5,7 @@
 // $NoKeywords: $
 //=============================================================================//
 #include "cbase.h"
+
 #include "tf_obj_dispenser.h"
 #include "engine/IEngineSound.h"
 #include "tf_player.h"
@@ -18,14 +19,9 @@
 #include "tier0/memdbgon.h"
 
 // Ground placed version
-#define DISPENSER_MODEL_PLACEMENT			"models/buildables/dispenser_blueprint.mdl"
-// *_UPGRADE models are models used during the upgrade transition
-#define DISPENSER_MODEL_LEVEL_1				"models/buildables/dispenser_light.mdl"
-#define DISPENSER_MODEL_LEVEL_1_UPGRADE		"models/buildables/dispenser.mdl"
-#define DISPENSER_MODEL_LEVEL_2				"models/buildables/dispenser_lvl2_light.mdl"
-#define DISPENSER_MODEL_LEVEL_2_UPGRADE		"models/buildables/dispenser_lvl2.mdl"
-#define DISPENSER_MODEL_LEVEL_3				"models/buildables/dispenser_lvl3_light.mdl"
-#define DISPENSER_MODEL_LEVEL_3_UPGRADE		"models/buildables/dispenser_lvl3.mdl"
+#define DISPENSER_MODEL_PLACEMENT	"models/buildables/dispenser_blueprint.mdl"
+#define DISPENSER_MODEL_BUILDING	"models/buildables/dispenser.mdl"
+#define DISPENSER_MODEL				"models/buildables/dispenser_light.mdl"
 
 #define DISPENSER_MINS			Vector( -20, -20, 0)
 #define DISPENSER_MAXS			Vector( 20, 20, 55)	// tweak me
@@ -60,6 +56,7 @@ int SendProxyArrayLength_HealingArray( const void *pStruct, int objectID )
 
 IMPLEMENT_SERVERCLASS_ST( CObjectDispenser, DT_ObjectDispenser )
 	SendPropInt( SENDINFO( m_iAmmoMetal ), 10 ),
+
 	SendPropArray2( 
 		SendProxyArrayLength_HealingArray,
 		SendPropInt("healing_array_element", 0, SIZEOF_IGNORE, NUM_NETWORKED_EHANDLE_BITS, SPROP_UNSIGNED, SendProxy_HealingList), 
@@ -82,8 +79,7 @@ PRECACHE_REGISTER(obj_dispenser);
 #define DISPENSER_MAX_HEALTH	150
 
 // How much of each ammo gets added per refill
-#define DISPENSER_REFILL_METAL_AMMO	40
-
+#define DISPENSER_REFILL_METAL_AMMO			40
 
 // How much ammo is given our per use
 #define DISPENSER_DROP_PRIMARY		40
@@ -91,11 +87,6 @@ PRECACHE_REGISTER(obj_dispenser);
 #define DISPENSER_DROP_METAL		40
 
 ConVar obj_dispenser_heal_rate( "obj_dispenser_heal_rate", "10.0", FCVAR_CHEAT |FCVAR_DEVELOPMENTONLY );
-//LEVEL 2 15
-//LEVEL 3 20
-
-
-extern ConVar tf_cheapobjects;
 
 class CDispenserTouchTrigger : public CBaseTrigger
 {
@@ -189,7 +180,7 @@ void CObjectDispenser::Spawn()
 //-----------------------------------------------------------------------------
 bool CObjectDispenser::StartBuilding( CBaseEntity *pBuilder )
 {
-	SetModel( DISPENSER_MODEL_LEVEL_1_UPGRADE );
+	SetModel( DISPENSER_MODEL_BUILDING );
 
 	CreateBuildPoints();
 
@@ -214,7 +205,7 @@ void CObjectDispenser::OnGoActive( void )
 	if ( !pBuilder )
 		return;
 
-	SetModel( DISPENSER_MODEL_LEVEL_1 );
+	SetModel( DISPENSER_MODEL );
 
 	// Put some ammo in the Dispenser
 	m_iAmmoMetal = 25;
@@ -267,23 +258,11 @@ void CObjectDispenser::Precache()
 
 	PrecacheModel( DISPENSER_MODEL_PLACEMENT );
 
-	iModelIndex = PrecacheModel( DISPENSER_MODEL_LEVEL_1 );
-	PrecacheGibsForModel(iModelIndex);
-
-	iModelIndex = PrecacheModel( DISPENSER_MODEL_LEVEL_1_UPGRADE );
+	iModelIndex = PrecacheModel( DISPENSER_MODEL_BUILDING );
 	PrecacheGibsForModel( iModelIndex );
 
-//	iModelIndex = PrecacheModel( DISPENSER_MODEL_LEVEL_2 );
-//	PrecacheGibsForModel(iModelIndex);
-
-//	iModelIndex = PrecacheModel( DISPENSER_MODEL_LEVEL_2_UPGRADE );
-//	PrecacheGibsForModel(iModelIndex);
-
-//	iModelIndex = PrecacheModel( DISPENSER_MODEL_LEVEL_3 );
-//	PrecacheGibsForModel(iModelIndex);
-
-//	iModelIndex = PrecacheModel( DISPENSER_MODEL_LEVEL_3_UPGRADE );
-//	PrecacheGibsForModel(iModelIndex);
+	iModelIndex = PrecacheModel( DISPENSER_MODEL );
+	PrecacheGibsForModel( iModelIndex );
 
 	PrecacheVGuiScreen( "screen_obj_dispenser_blue" );
 	PrecacheVGuiScreen( "screen_obj_dispenser_red" );
@@ -294,53 +273,6 @@ void CObjectDispenser::Precache()
 
 	PrecacheParticleSystem( "dispenser_heal_red" );
 	PrecacheParticleSystem( "dispenser_heal_blue" );
-}
-
-//-----------------------------------------------------------------------------
-//
-//-----------------------------------------------------------------------------
-bool CObjectDispenser::CanBeUpgraded(CTFPlayer *pPlayer)
-{
-	// Already upgrading
-//	if (m_iState == SENTRY_STATE_UPGRADING)
-	{
-//		return false;
-	}
-
-	// only engineers
-	if (!ClassCanBuild(pPlayer->GetPlayerClass()->GetClassIndex(), GetType()))
-	{
-		return false;
-	}
-
-	// max upgraded
-	if (m_iUpgradeLevel >= 3)
-	{
-		return false;
-	}
-
-	return true;
-}
-
-#define DISPENSER_UPGRADE_DURATION	1.5f
-
-//-----------------------------------------------------------------------------
-// Hit by a friendly engineer's wrench
-//-----------------------------------------------------------------------------
-bool CObjectDispenser::OnWrenchHit(CTFPlayer *pPlayer)
-{
-	bool bDidWork = false;
-
-	// If the player repairs it at all, we're done
-	if (GetHealth() < GetMaxHealth())
-	{
-		if (Command_Repair(pPlayer))
-		{
-			bDidWork = true;
-		}
-	}
-
-	return bDidWork;
 }
 
 //-----------------------------------------------------------------------------

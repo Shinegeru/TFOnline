@@ -26,8 +26,6 @@ enum
 {
 	TF_TEAM_RED = LAST_SHARED_TEAM+1,
 	TF_TEAM_BLUE,
-	//TF_TEAM_GREEN,
-	//TF_TEAM_YELLOW,
 	TF_TEAM_COUNT
 };
 
@@ -35,7 +33,8 @@ enum
 
 extern const char *g_aTeamNames[TF_TEAM_COUNT];
 extern color32 g_aTeamColors[TF_TEAM_COUNT];
-extern color32 g_aTeamSkinColors[TF_TEAM_COUNT];
+
+#define COLOR_TF_SPECTATOR Color( 245, 229, 196, 255 )
 
 #define CONTENTS_REDTEAM	CONTENTS_TEAM1
 #define CONTENTS_BLUETEAM	CONTENTS_TEAM2
@@ -87,12 +86,9 @@ enum
 //-----------------------------------------------------------------------------
 #define TF_SPY_UNDEFINED		TEAM_UNASSIGNED
 
+
 #define COLOR_TF_BLUE	Color( 64, 64, 255, 255 )
 #define COLOR_TF_RED	Color( 255, 64, 64, 255 )
-#define COLOR_TF_GREEN	Color( 64, 255, 64, 255 )
-#define COLOR_TF_YELLOW	Color( 255, 255, 64, 255 )
-#define COLOR_TF_SPECTATOR Color( 245, 229, 196, 255 )
-
 
 //-----------------------------------------------------------------------------
 // Player Classes.
@@ -100,7 +96,7 @@ enum
 #define TF_CLASS_COUNT			( TF_CLASS_COUNT_ALL - 1 )
 
 #define TF_FIRST_NORMAL_CLASS	( TF_CLASS_UNDEFINED + 1 )
-#define TF_LAST_NORMAL_CLASS	( TF_CLASS_COUNT_ALL - 1 )
+#define TF_LAST_NORMAL_CLASS	( TF_CLASS_CIVILIAN - 1 )
 
 #define	TF_CLASS_MENU_BUTTONS	( TF_CLASS_RANDOM + 1 )
 
@@ -128,9 +124,6 @@ enum
 extern const char *g_aPlayerClassNames[];				// localized class names
 extern const char *g_aPlayerClassNames_NonLocalized[];	// non-localized class names
 
-extern const char *g_aPlayerClassEmblems[];
-extern const char *g_aPlayerClassEmblemsDead[];
-
 //-----------------------------------------------------------------------------
 // For entity_capture_flags to use when placed in the world
 //-----------------------------------------------------------------------------
@@ -151,7 +144,6 @@ enum
 	TF_GAMETYPE_UNDEFINED = 0,
 	TF_GAMETYPE_CTF,
 	TF_GAMETYPE_CP,
-	TF_GAMETYPE_ESCORT,
 };
 extern const char *g_aGameTypeNames[];	// localized gametype names
 
@@ -301,7 +293,6 @@ enum
 	TF_WEAPON_SENTRY_ROCKET,
 	TF_WEAPON_DISPENSER,
 	TF_WEAPON_INVIS,
-	TF_WEAPON_FLAG,
 
 	TF_WEAPON_COUNT
 };
@@ -324,7 +315,6 @@ enum
 	TF_PROJECTILE_PIPEBOMB,
 	TF_PROJECTILE_PIPEBOMB_REMOTE,
 	TF_PROJECTILE_SYRINGE,
-	TF_PROJECTILE_NAIL,
 
 	TF_NUM_PROJECTILES
 };
@@ -373,12 +363,13 @@ enum
 	// If you add a new condition that shouldn't have this behavior, add it before this section.
 	TF_COND_HEALTH_BUFF,
 	TF_COND_BURNING,
-	TF_COND_SMOKE_BOMB,
 
 	// Add new conditions that should be affected by healing here
 
 	TF_COND_LAST
 };
+
+int ConditionExpiresFast( int nCond );
 
 //-----------------------------------------------------------------------------
 // TF Player State.

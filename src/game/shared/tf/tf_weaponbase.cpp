@@ -33,19 +33,9 @@
 #include "ProxyEntity.h"
 #include "materialsystem/IMaterial.h"
 #include "materialsystem/IMaterialVar.h"
-
-extern CTFWeaponInfo *GetTFWeaponInfo( int iWeapon );
 #endif
 
 extern ConVar tf_useparticletracers;
-
-#ifdef CLIENT_DLL
-extern ConVar tf_model_muzzleflash;
-extern ConVar tf_muzzlelight;
-#endif
-
-ConVar tf_weapon_criticals( "tf_weapon_criticals", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Whether or not random crits are enabled" );
-extern ConVar tf_weapon_criticals_melee;
 
 //=============================================================================
 //
@@ -454,8 +444,6 @@ void CTFWeaponBase::CalcIsAttackCritical( void)
 
 	if ( gpGlobals->framecount == m_iLastCritCheckFrame )
 		return;
-	if ( !tf_weapon_criticals.GetBool() && ( !IsMeleeWeapon() || ( IsMeleeWeapon() && tf_weapon_criticals_melee.GetInt() == 1 ) ) )
-		return;
 	m_iLastCritCheckFrame = gpGlobals->framecount;
 
 	// if base entity seed has changed since last calculation, reseed with new seed
@@ -619,7 +607,7 @@ bool CTFWeaponBase::ReloadSingly( void )
 
 			m_bReloadedThroughAnimEvent = false;
 
-			if (SendWeaponAnim(ACT_VM_RELOAD))
+			if ( SendWeaponAnim( ACT_VM_RELOAD ) )
 			{
 				if ( GetWeaponID() == TF_WEAPON_GRENADELAUNCHER )
 				{
@@ -1106,14 +1094,6 @@ float CTFWeaponBase::GetMuzzleFlashModelLifetime( void )
 	return GetTFWpnData().m_flMuzzleFlashModelDuration;
 }
 
-// -----------------------------------------------------------------------------
-// Purpose:
-// -----------------------------------------------------------------------------
-float CTFWeaponBase::GetMuzzleFlashModelScale(void)
-{
-	return GetTFWpnData().m_flMuzzleFlashModelScale;
-}
-
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
@@ -1273,7 +1253,7 @@ void CTFWeaponBase::CreateMuzzleFlashEffects( C_BaseEntity *pAttachEnt, int nInd
 	const char *pszMuzzleFlashParticleEffect = GetMuzzleFlashParticleEffect();
 
 	// Pick the right muzzleflash (3rd / 1st person)
-	CTFPlayer *pLocalPlayer = C_TFPlayer::GetLocalTFPlayer();
+	CBasePlayer *pLocalPlayer = C_BasePlayer::GetLocalPlayer();
 	if ( pLocalPlayer && (GetOwnerEntity() == pLocalPlayer || 
 		(pLocalPlayer->GetObserverMode() == OBS_MODE_IN_EYE && pLocalPlayer->GetObserverTarget() == GetOwnerEntity())) )
 	{
@@ -1290,11 +1270,10 @@ void CTFWeaponBase::CreateMuzzleFlashEffects( C_BaseEntity *pAttachEnt, int nInd
 		pAttachEnt->GetAttachment( iMuzzleFlashAttachment, vecOrigin, angAngles );
 
 		// Muzzleflash light
-		if ( tf_muzzlelight.GetBool() )
-		{
-			CLocalPlayerFilter filter;
-			TE_DynamicLight( filter, 0.0f, &vecOrigin, 255, 192, 64, 5, 70.0f, 0.05f, 70.0f / 0.05f, LIGHT_INDEX_MUZZLEFLASH );
-		}
+/*
+		CLocalPlayerFilter filter;
+		TE_DynamicLight( filter, 0.0f, &vecOrigin, 255, 192, 64, 5, 70.0f, 0.05f, 70.0f / 0.05f, LIGHT_INDEX_MUZZLEFLASH );
+*/
 
 		if ( pszMuzzleFlashEffect )
 		{
@@ -1310,7 +1289,8 @@ void CTFWeaponBase::CreateMuzzleFlashEffects( C_BaseEntity *pAttachEnt, int nInd
 			DispatchEffect( pszMuzzleFlashEffect, muzzleFlashData );
 		}
 
-		if (pszMuzzleFlashModel && tf_model_muzzleflash.GetBool())
+#if 0
+		if ( pszMuzzleFlashModel )
 		{
 			float flEffectLifetime = GetMuzzleFlashModelLifetime();
 
@@ -1327,12 +1307,8 @@ void CTFWeaponBase::CreateMuzzleFlashEffects( C_BaseEntity *pAttachEnt, int nInd
 				// FIXME: This is an incredibly brutal hack to get muzzle flashes positioned correctly for recording
 				m_hMuzzleFlashModel[nIndex]->SetIs3rdPersonFlash( nIndex == 1 );
 			}
-
-			m_hMuzzleFlashModel[nIndex]->SetModelScale(GetMuzzleFlashModelScale());
-
-			// If we use a muzzle model, we don't need to do the particle effect
-			return;
 		}
+#endif
 
 		if ( pszMuzzleFlashParticleEffect ) 
 		{
@@ -1739,7 +1715,7 @@ acttable_t CTFWeaponBase::m_acttablePDA[] =
 
 ConVar mp_forceactivityset( "mp_forceactivityset", "-1", FCVAR_CHEAT|FCVAR_REPLICATED|FCVAR_DEVELOPMENTONLY );
 
-acttable_t *CTFWeaponBase::ActivityList( void )
+acttable_t *CTFWeaponBase::ActivityList( int &iActivityCount )
 {
 	int iWeaponRole = GetTFWpnData().m_iWeaponType;
 
@@ -1749,8 +1725,7 @@ acttable_t *CTFWeaponBase::ActivityList( void )
 	}
 
 #ifdef CLIENT_DLL
-	// If we're disguised, we always show the primary weapon
-	// even though our actual weapon may not be primary 
+	// If we're disguised, we show a different weapon from what we're actually carrying.
 	CTFPlayer *pPlayer = GetTFPlayerOwner();
 	if ( pPlayer && pPlayer->m_Shared.InCond( TF_COND_DISGUISED ) && pPlayer->IsEnemyPlayer() )
 	{
@@ -1769,60 +1744,28 @@ acttable_t *CTFWeaponBase::ActivityList( void )
 	case TF_WPN_TYPE_PRIMARY:
 	default:
 		pTable = m_acttablePrimary;
+		iActivityCount = ARRAYSIZE( m_acttablePrimary );
 		break;
 	case TF_WPN_TYPE_SECONDARY:
 		pTable = m_acttableSecondary;
+		iActivityCount = ARRAYSIZE( m_acttableSecondary );
 		break;
 	case TF_WPN_TYPE_MELEE:
 		pTable = m_acttableMelee;
+		iActivityCount = ARRAYSIZE( m_acttableMelee );
 		break;
 	case TF_WPN_TYPE_BUILDING:
 		pTable = m_acttableBuilding;
+		iActivityCount = ARRAYSIZE( m_acttableBuilding );
 		break;
 	case TF_WPN_TYPE_PDA:
 		pTable = m_acttablePDA;
+		iActivityCount = ARRAYSIZE( m_acttablePDA );
 		break;
 	}
 
 	return pTable;
 }
-
-int CTFWeaponBase::ActivityListCount( void )
-{
-	int iWeaponRole = 0;
-
-	if ( mp_forceactivityset.GetInt() >= 0 )
-	{
-		iWeaponRole = mp_forceactivityset.GetInt();
-	}
-
-	int iSize = 0;
-
-	switch( iWeaponRole )
-	{
-	case TF_WPN_TYPE_PRIMARY:
-	default:
-		iSize = ARRAYSIZE(m_acttablePrimary);
-		break;
-	case TF_WPN_TYPE_SECONDARY:
-		iSize = ARRAYSIZE(m_acttableSecondary);
-		break;
-	case TF_WPN_TYPE_MELEE:
-		iSize = ARRAYSIZE(m_acttableMelee);
-		break;
-	case TF_WPN_TYPE_BUILDING:
-		iSize = ARRAYSIZE(m_acttableBuilding);
-		break;
-	case TF_WPN_TYPE_PDA:
-		iSize = ARRAYSIZE(m_acttablePDA);
-		break;
-	}
-
-	return iSize;
-}
-
-
-
 
 // -----------------------------------------------------------------------------
 // Purpose:
@@ -2212,3 +2155,22 @@ IMaterial *CWeaponInvisProxy::GetMaterial()
 EXPOSE_INTERFACE( CWeaponInvisProxy, IMaterialProxy, "weapon_invis" IMATERIAL_PROXY_INTERFACE_VERSION );
 
 #endif // CLIENT_DLL
+
+CTFWeaponInfo *GetTFWeaponInfo( int iWeapon )
+{
+	// Get the weapon information.
+	const char *pszWeaponAlias = WeaponIdToAlias( iWeapon );
+	if ( !pszWeaponAlias )
+	{
+		return NULL;
+	}
+
+	WEAPON_FILE_INFO_HANDLE	hWpnInfo = LookupWeaponInfoSlot( pszWeaponAlias );
+	if ( hWpnInfo == GetInvalidWeaponInfoHandle() )
+	{
+		return NULL;
+	}
+
+	CTFWeaponInfo *pWeaponInfo = static_cast<CTFWeaponInfo*>( GetFileWeaponInfoFromHandle( hWpnInfo ) );
+	return pWeaponInfo;
+}

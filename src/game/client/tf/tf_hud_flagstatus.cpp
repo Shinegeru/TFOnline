@@ -318,7 +318,7 @@ void CTFHudFlagObjectives::ApplySchemeSettings( IScheme *pScheme )
 	LoadControlSettings( "resource/UI/HudObjectiveFlagPanel.res" );
 
 	m_pCarriedImage = dynamic_cast<CTFImagePanel *>( FindChildByName( "CarriedImage" ) );
-	m_pPlayingTo = dynamic_cast<CExLabel *>(FindChildByName("PlayingTo"));
+	m_pPlayingTo = dynamic_cast<CTFLabel *>( FindChildByName( "PlayingTo" ) );
 	m_pPlayingToBG = dynamic_cast<CTFImagePanel *>( FindChildByName( "PlayingToBG" ) );
 
 	m_pRedFlag = dynamic_cast<CTFFlagStatus *>( FindChildByName( "RedFlag" ) );
@@ -462,18 +462,18 @@ void CTFHudFlagObjectives::OnTick()
 			if ( pTarget->HasTheFlag() )
 			{
 				bSpecCarriedImage = true;
-				
-				CCaptureFlag *pPlayerFlag = dynamic_cast<CCaptureFlag*>( pTarget->GetItem() );
-
-				if ( m_pSpecCarriedImage )
+				if ( pTarget->GetTeamNumber() == TF_TEAM_RED )
 				{
-					if ( pPlayerFlag->GetTeamNumber() == TF_TEAM_RED )
+					if ( m_pSpecCarriedImage )
 					{
-						m_pSpecCarriedImage->SetImage( ("%s_blue", STRING( pPlayerFlag->m_sFlagIcon ) ) );
+						m_pSpecCarriedImage->SetImage( "../hud/objectives_flagpanel_carried_blue" );
 					}
-					else
+				}
+				else
+				{
+					if ( m_pSpecCarriedImage )
 					{
-						m_pSpecCarriedImage->SetImage( ("%s_red", STRING( pPlayerFlag->m_sFlagIcon ) ) );
+						m_pSpecCarriedImage->SetImage( "../hud/objectives_flagpanel_carried_red" );
 					}
 				}
 			}

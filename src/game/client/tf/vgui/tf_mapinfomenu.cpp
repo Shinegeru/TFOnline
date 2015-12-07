@@ -47,7 +47,7 @@ CTFMapInfoMenu::CTFMapInfoMenu( IViewPort *pViewPort ) : Frame( NULL, PANEL_MAPI
 	SetKeyBoardInputEnabled( true );
 	SetMouseInputEnabled( true );
 
-	m_pTitle = new CExLabel(this, "MapInfoTitle", " ");
+	m_pTitle = new CTFLabel( this, "MapInfoTitle", " " );
 
 #ifdef _X360
 	m_pFooter = new CTFFooter( this, "Footer" );

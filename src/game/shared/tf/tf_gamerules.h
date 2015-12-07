@@ -47,6 +47,9 @@
 #endif
 
 extern ConVar	tf_avoidteammates;
+extern ConVar	tf_avoidteammates_pushaway;
+
+extern ConVar	fraglimit;
 
 extern Vector g_TFClassViewVectors[];
 
@@ -66,14 +69,10 @@ public:
 	void	InputSetBlueTeamGoalString( inputdata_t &inputdata );
 	void	InputSetRedTeamRole( inputdata_t &inputdata );
 	void	InputSetBlueTeamRole( inputdata_t &inputdata );
-	void	InputAddRedTeamScore(inputdata_t &inputdata);
-	void	InputAddBlueTeamScore(inputdata_t &inputdata);
-
-	
+	void	InputAddRedTeamScore( inputdata_t &inputdata );
+	void	InputAddBlueTeamScore( inputdata_t &inputdata );
 
 	virtual void Activate();
-
-	int		m_iHud_Type;
 
 #endif
 };
@@ -83,16 +82,23 @@ struct PlayerRoundScore_t
 	int iPlayerIndex;	// player index
 	int iRoundScore;	// how many points scored this round
 	int	iTotalScore;	// total points scored across all rounds
+	int	iKills;
+	int iDeaths;
 };
 
 #define MAX_TEAMGOAL_STRING		256
 
-class CTFGameRules : public CTeamplayRoundBasedRules, public CGameEventListener
+class CTFGameRules : public CTeamplayRoundBasedRules
 {
 public:
 	DECLARE_CLASS( CTFGameRules, CTeamplayRoundBasedRules );
 
 	CTFGameRules();
+
+	enum
+	{
+		HALLOWEEN_SCENARIO_DOOMSDAY
+	};
 
 	// Damage Queries.
 	virtual bool	Damage_IsTimeBased( int iDmgType );			// Damage types that are time-based.
@@ -113,6 +119,10 @@ public:
 	bool			IsBirthday( void );
 
 	virtual const unsigned char *GetEncryptionKey( void ) { return (unsigned char *)"E2NcUkG2"; }
+
+	virtual float	GetRespawnWaveMaxLength( int iTeam, bool bScaleWithNumPlayers = true );
+
+	virtual bool	ShouldBalanceTeams( void );
 
 #ifdef GAME_DLL
 public:
@@ -158,9 +168,10 @@ public:
 
 	virtual void	Activate();
 
-	virtual void	SetHudType(int iHudType){ m_iHudType = iHudType; };
-
 	virtual bool	AllowDamage( CBaseEntity *pVictim, const CTakeDamageInfo &info );
+
+	virtual int		GetClassLimit( int iDesiredClassIndex );
+	virtual bool	CanPlayerChooseClass( CBasePlayer *pPlayer, int iDesiredClassIndex );
 
 	void			SetTeamGoalString( int iTeam, const char *pszGoal );
 
@@ -172,6 +183,8 @@ public:
 
 	bool			ShouldScorePerRound( void );
 
+	virtual int		PlayerRelationship(CBaseEntity *pPlayer, CBaseEntity *pTarget);
+
 protected:
 	virtual void	InitTeams( void );
 
@@ -181,10 +194,10 @@ protected:
 	
 	static int		PlayerRoundScoreSortFunc( const PlayerRoundScore_t *pRoundScore1, const PlayerRoundScore_t *pRoundScore2 );
 
-	virtual void FillOutTeamplayRoundWinEvent( IGameEvent *event );
+	virtual void	FillOutTeamplayRoundWinEvent( IGameEvent *event );
 
-	virtual bool CanChangelevelBecauseOfTimeLimit( void );
-	virtual bool CanGoToStalemate( void );
+	virtual bool	CanChangelevelBecauseOfTimeLimit( void );
+	virtual bool	CanGoToStalemate( void );
 #endif // GAME_DLL
 
 public:
@@ -210,11 +223,13 @@ public:
 
 	const char *GetTeamGoalString( int iTeam );
 
-	virtual int		GetHudType(void){ return m_iHudType; };
-	
-	virtual bool	IsMultiplayer(void){ return true; };
-	
+	virtual bool	IsMultiplayer( void ){ return true; };
+
 	virtual bool	IsConnectedUserInfoChangeAllowed(CBasePlayer *pPlayer){ return true; };
+
+	virtual bool    IsMannVsMachineMode( void ) { return false; };
+	virtual bool    IsHalloweenScenario( int iEventType ) { return false; };
+	virtual bool	IsPVEModeActive( void ) { return false; };
 
 #ifdef CLIENT_DLL
 
@@ -236,7 +251,6 @@ public:
 	virtual bool ClientCommand( CBaseEntity *pEdict, const CCommand &args );
 	virtual void Think();
 
-	bool CheckTimeLimit();
 	bool CheckWinLimit();
 	bool CheckCapsPerRound();
 
@@ -294,6 +308,8 @@ public:
 	void	SendHudNotification( IRecipientFilter &filter, HudNotification_t iType );
 	void	SendHudNotification( IRecipientFilter &filter, const char *pszText, const char *pszIcon, int iTeam = TEAM_UNASSIGNED );
 
+	virtual void PlayerSpawn( CBasePlayer *pPlayer );
+
 private:
 
 	int DefaultFOV( void ) { return 75; }
@@ -316,7 +332,6 @@ private:
 	int m_iPrevRoundState;	// bit string representing the state of the points at the start of the previous miniround
 	int m_iCurrentRoundState;
 	int m_iCurrentMiniRoundMask;
-
 #endif
 
 	CNetworkVar( int, m_nGameType ); // Type of game this map is (CTF, CP)
@@ -329,8 +344,6 @@ public:
 	int	 m_iPreviousRoundWinners;
 
 	int		m_iBirthdayMode;
-
-	int		m_iHudType;
 
 };
 

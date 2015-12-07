@@ -12,7 +12,7 @@
 
 #include "clientmode_shared.h"
 #include "tf_viewport.h"
-#include "GameUI/igameui.h"
+#include "GameUI/IGameUI.h"
 
 class CHudMenuEngyBuild;
 class CHudMenuEngyDestroy;
@@ -40,6 +40,8 @@ public:
 	virtual void	Shutdown();
 
 //	virtual int		KeyInput( int down, ButtonCode_t keynum, const char *pszCurrentBinding );
+
+	virtual bool	DoPostScreenSpaceEffects( const CViewSetup *pSetup );
 
 	virtual float	GetViewModelFOV( void );
 	virtual bool	ShouldDrawViewModel();

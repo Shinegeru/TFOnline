@@ -42,9 +42,7 @@ END_DATADESC()
 
 #ifndef CLIENT_DLL
 ConVar tf_meleeattackforcescale( "tf_meleeattackforcescale", "80.0", FCVAR_CHEAT | FCVAR_GAMEDLL | FCVAR_DEVELOPMENTONLY );
-#endif
-
-ConVar tf_weapon_criticals_melee( "tf_weapon_criticals_melee", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Controls random crits for melee weapons.\n0 - Melee weapons do not randomly crit. \n1 - Melee weapons can randomly crit only if tf_weapon_criticals is also enabled. \n2 - Melee weapons can always randomly crit regardless of the tf_weapon_criticals setting." );
+#endif;
 
 //=============================================================================
 //
@@ -166,8 +164,7 @@ void CTFWeaponBaseMelee::SecondaryAttack()
 //-----------------------------------------------------------------------------
 void CTFWeaponBaseMelee::Swing( CTFPlayer *pPlayer )
 {
-	if ( tf_weapon_criticals_melee.GetInt() != 0 )
-		CalcIsAttackCritical();
+	CalcIsAttackCritical();
 
 	// Play the melee swing and miss (whoosh) always.
 	SendPlayerAnimEvent( pPlayer );

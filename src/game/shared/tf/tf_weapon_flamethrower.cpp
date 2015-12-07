@@ -15,8 +15,6 @@
 	#include "vstdlib/random.h"
 	#include "engine/IEngineSound.h"
 	#include "soundenvelope.h"
-	#include "dlight.h"
-	#include "iefx.h"
 
 #else
 
@@ -29,7 +27,7 @@
 	#include "tf_team.h"
 	#include "tf_obj.h"
 
-	ConVar	tf_debug_flamethrower("tf_debug_flamethrower", "0", FCVAR_CHEAT, "Visualize the flamethrower damage." );
+	ConVar	tf_debug_flamethrower("tf_debug_flamethrower", "0", FCVAR_CHEAT | FCVAR_DEVELOPMENTONLY, "Visualize the flamethrower damage." );
 	ConVar  tf_flamethrower_velocity( "tf_flamethrower_velocity", "2300.0", FCVAR_CHEAT | FCVAR_DEVELOPMENTONLY, "Initial velocity of flame damage entities." );
 	ConVar	tf_flamethrower_drag("tf_flamethrower_drag", "0.89", FCVAR_CHEAT | FCVAR_DEVELOPMENTONLY, "Air drag of flame damage entities." );
 	ConVar	tf_flamethrower_float("tf_flamethrower_float", "50.0", FCVAR_CHEAT | FCVAR_DEVELOPMENTONLY, "Upward float velocity of flame damage entities." );
@@ -53,10 +51,6 @@
 
 #define TF_FLAMETHROWER_AMMO_PER_SECOND_PRIMARY_ATTACK		14.0f
 #define TF_FLAMETHROWER_AMMO_PER_SECONDARY_ATTACK	10
-
-#ifdef CLIENT_DLL
-	extern ConVar tf_muzzlelight;
-#endif
 
 IMPLEMENT_NETWORKCLASS_ALIASED( TFFlameThrower, DT_WeaponFlameThrower )
 
@@ -318,22 +312,6 @@ void CTFFlameThrower::PrimaryAttack()
 		{
 			RestartParticleEffect();
 		}
-	}
-#endif
-
-#ifdef CLIENT_DLL
-	// Handle the flamethrower light
-	if ( tf_muzzlelight.GetBool() )
-	{
-		dlight_t *dl = effects->CL_AllocDlight( LIGHT_INDEX_MUZZLEFLASH + index );
-		dl->origin = vecMuzzlePos;
-		dl->color.r = 255;
-		dl->color.g = 100;
-		dl->color.b = 10;
-		dl->die = gpGlobals->curtime + 0.01f;
-		dl->radius = 240.f;
-		dl->decay = 512.0f;
-		dl->style = 5;
 	}
 #endif
 

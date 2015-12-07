@@ -14,7 +14,7 @@
 
 // Datatable
 IMPLEMENT_SERVERCLASS_ST( CTFPlayerResource, DT_TFPlayerResource )
-	SendPropArray3( SENDINFO_ARRAY3( m_iTotalScore ), SendPropInt( SENDINFO_ARRAY( m_iTotalScore ), 12, SPROP_UNSIGNED ) ),
+	SendPropArray3( SENDINFO_ARRAY3( m_iTotalScore ), SendPropInt( SENDINFO_ARRAY( m_iTotalScore ), 13 ) ),
 	SendPropArray3( SENDINFO_ARRAY3( m_iMaxHealth ), SendPropInt( SENDINFO_ARRAY( m_iMaxHealth ), 10, SPROP_UNSIGNED ) ),
 	SendPropArray3( SENDINFO_ARRAY3( m_iPlayerClass ), SendPropInt( SENDINFO_ARRAY( m_iPlayerClass ), 5, SPROP_UNSIGNED ) ),
 END_SEND_TABLE()
@@ -46,8 +46,8 @@ void CTFPlayerResource::UpdatePlayerData( void )
 			{
 			m_iMaxHealth.Set( i, pPlayer->GetPlayerClass()->GetMaxHealth() );
 			m_iPlayerClass.Set( i, pPlayer->GetPlayerClass()->GetClassIndex() );
-				int iTotalScore = CTFGameRules::CalcPlayerScore( &pPlayerStats->statsAccumulated );
-				m_iTotalScore.Set( i, iTotalScore );
+			int iTotalScore = CTFGameRules::CalcPlayerScore( &pPlayerStats->statsAccumulated );
+			m_iTotalScore.Set( i, iTotalScore );
 			}					
 		}
 	}

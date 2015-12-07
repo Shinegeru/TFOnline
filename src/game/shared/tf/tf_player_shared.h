@@ -120,7 +120,7 @@ public:
 	virtual void OnDataChanged( void );
 
 	// check the newly networked conditions for changes
-	void	UpdateConditions( void );
+	void	SyncConditions( int nCond, int nOldCond, int nUnused, int iOffset );
 #endif
 
 	void	Disguise( int nTeam, int nClass );
@@ -143,10 +143,14 @@ public:
 	}
 	int		GetDisguiseHealth( void )			{ return m_iDisguiseHealth; }
 	void	SetDisguiseHealth( int iDisguiseHealth );
+	int		GetDisguiseMaxHealth( void )		{ return m_iDisguiseMaxHealth; }
+	int		GetDisguiseMaxBuffedHealth( void );
+
+	int		GetDisguiseWeaponID( void )			{ return m_iDisguiseWeaponID; }
+	void	RecalcDisguiseWeapon( int iSlot = 0 );
 
 #ifdef CLIENT_DLL
 	void	OnDisguiseChanged( void );
-	void	RecalcDisguiseWeapon( void );
 	int		GetDisguiseWeaponModelIndex( void ) { return m_iDisguiseWeaponModelIndex; }
 	CTFWeaponInfo *GetDisguiseWeaponInfo( void );
 #endif
@@ -154,13 +158,16 @@ public:
 #ifdef GAME_DLL
 	void	Heal( CTFPlayer *pPlayer, float flAmount, bool bDispenserHeal = false );
 	void	StopHealing( CTFPlayer *pPlayer );
-	void	RecalculateInvuln( bool bInstantRemove = false );
+	void	RecalculateChargeEffects( bool bInstantRemove = false );
 	int		FindHealerIndex( CTFPlayer *pPlayer );
 	EHANDLE	GetFirstHealer();
+	void	HealthKitPickupEffects( int iAmount );
 #endif
 	int		GetNumHealers( void ) { return m_nNumHealers; }
 
-	void	Burn( CTFPlayer *pPlayer );
+	void	Burn( CTFPlayer *pAttacker, CTFWeaponBase *pWeapon = NULL );
+
+	void	RecalculatePlayerBodygroups( void );
 
 	// Weapons.
 	CTFWeaponBase *GetActiveTFWeapon() const;
@@ -182,6 +189,9 @@ public:
 
 	int		GetDesiredPlayerClassIndex( void );
 
+	int		GetDesiredWeaponIndex( void ) { return m_iDesiredWeaponID; }
+	void	SetDesiredWeaponIndex( int iWeaponID ) { m_iDesiredWeaponID = iWeaponID; }
+
 	float	GetSpyCloakMeter() const		{ return m_flCloakMeter; }
 	void	SetSpyCloakMeter( float val ) { m_flCloakMeter = val; }
 
@@ -189,6 +199,9 @@ public:
 	void	SetJumping( bool bJumping );
 	bool    IsAirDashing( void ) { return m_bAirDash; }
 	void    SetAirDash( bool bAirDash );
+	int		GetAirDucks( void ) { return m_nAirDucked; }
+	void	IncrementAirDucks( void );
+	void	ResetAirDucks( void );
 
 	void	DebugPrintConditions( void );
 
@@ -198,6 +211,12 @@ public:
 	bool	IsPlayerDominated( int iPlayerIndex );
 	bool	IsPlayerDominatingMe( int iPlayerIndex );
 	void	SetPlayerDominatingMe( CTFPlayer *pPlayer, bool bDominated );
+
+	int		GetTeleporterEffectColor( void ) { return m_nTeamTeleporterUsed; }
+	void	SetTeleporterEffectColor( int iTeam ) { m_nTeamTeleporterUsed = iTeam; }
+#ifdef CLIENT_DLL
+	bool	ShouldShowRecentlyTeleported( void );
+#endif
 
 private:
 
@@ -209,6 +228,7 @@ private:
 	void OnAddBurning( void );
 	void OnAddDisguising( void );
 	void OnAddDisguised( void );
+	void OnAddTaunting( void );
 
 	void OnRemoveZoomed( void );
 	void OnRemoveBurning( void );
@@ -217,6 +237,7 @@ private:
 	void OnRemoveDisguising( void );
 	void OnRemoveInvulnerable( void );
 	void OnRemoveTeleported( void );
+	void OnRemoveTaunting( void );
 
 	float GetCritMult( void );
 
@@ -236,7 +257,11 @@ private:
 	// Vars that are networked.
 	CNetworkVar( int, m_nPlayerState );			// Player state.
 	CNetworkVar( int, m_nPlayerCond );			// Player condition flags.
-	float m_flCondExpireTimeLeft[TF_COND_LAST];		// Time until each condition expires
+	// Ugh...
+	CNetworkVar( int, m_nPlayerCondEx );
+	CNetworkVar( int, m_nPlayerCondEx2 );
+	CNetworkVar( int, m_nPlayerCondEx3 );
+	CNetworkArray( float, m_flCondExpireTimeLeft, TF_COND_LAST ); // Time until each condition expires
 
 //TFTODO: What if the player we're disguised as leaves the server?
 //...maybe store the name instead of the index?
@@ -245,8 +270,11 @@ private:
 	EHANDLE m_hDisguiseTarget;					// Playing the spy is using for name disguise.
 	CNetworkVar( int, m_iDisguiseTargetIndex );
 	CNetworkVar( int, m_iDisguiseHealth );		// Health to show our enemies in player id
+	CNetworkVar( int, m_iDisguiseMaxHealth );
+	CNetworkVar( float, m_flDisguiseChargeLevel );
 	CNetworkVar( int, m_nDesiredDisguiseClass );
 	CNetworkVar( int, m_nDesiredDisguiseTeam );
+	CNetworkVar( int, m_iDisguiseWeaponID );
 
 	bool m_bEnableSeparation;		// Keeps separation forces on when player stops moving, but still penetrating
 	Vector m_vSeparationVelocity;	// Velocity used to keep player seperate from teammates
@@ -273,10 +301,12 @@ private:
 	float					m_flDisguiseHealFraction;	// Same for disguised healing
 
 	float m_flInvulnerableOffTime;
+	float m_flCritOffTime;
 #endif
 
 	// Burn handling
 	CHandle<CTFPlayer>		m_hBurnAttacker;
+	CHandle<CTFWeaponBase>	m_hBurnWeapon;
 	CNetworkVar( int,		m_nNumFlames );
 	float					m_flFlameBurnTime;
 	float					m_flFlameRemoveTime;
@@ -285,10 +315,8 @@ private:
 
 	float m_flDisguiseCompleteTime;
 
-	int	m_nOldConditions;
-	int	m_nOldDisguiseClass;
-
 	CNetworkVar( int, m_iDesiredPlayerClass );
+	CNetworkVar( int, m_iDesiredWeaponID );
 
 	float m_flNextBurningSound;
 
@@ -296,6 +324,7 @@ private:
 
 	CNetworkVar( bool, m_bJumping );
 	CNetworkVar( bool, m_bAirDash );
+	CNetworkVar( int, m_nAirDucked );
 
 	CNetworkVar( float, m_flStealthNoAttackExpire );
 	CNetworkVar( float, m_flStealthNextChangeTime );
@@ -305,6 +334,8 @@ private:
 	CNetworkArray( bool, m_bPlayerDominated, MAX_PLAYERS+1 );		// array of state per other player whether player is dominating other players
 	CNetworkArray( bool, m_bPlayerDominatingMe, MAX_PLAYERS+1 );	// array of state per other player whether other players are dominating this player
 	
+	CNetworkVar( int, m_nTeamTeleporterUsed );
+
 #ifdef GAME_DLL
 	float	m_flNextCritUpdate;
 	CUtlVector<CTFDamageEvent> m_DamageEvents;
@@ -314,6 +345,19 @@ private:
 	CTFWeaponInfo *m_pDisguiseWeaponInfo;
 
 	WEAPON_FILE_INFO_HANDLE	m_hDisguiseWeaponInfo;
+
+	EHANDLE m_hCritEffectHost;
+	CSoundPatch *m_pCritSound;
+
+	int	m_nOldDisguiseClass;
+	int m_nOldDisguiseTeam;
+
+	int m_iOldDisguiseWeaponID;
+
+	int	m_nOldConditions;
+	int m_nOldConditionsEx;
+	int m_nOldConditionsEx2;
+	int m_nOldConditionsEx3;
 #endif
 };			   
 

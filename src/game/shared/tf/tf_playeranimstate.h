@@ -41,10 +41,10 @@ public:
 
 	virtual void	DoAnimationEvent( PlayerAnimEvent_t event, int nData = 0 );
 
-	virtual bool	HandleMoving( Activity &idealActivity );
-	virtual bool	HandleJumping( Activity &idealActivity );
-	virtual bool	HandleDucking( Activity &idealActivity );
-	virtual bool	HandleSwimming( Activity &idealActivity );
+	virtual bool	HandleMoving(Activity &idealActivity);
+	virtual bool	HandleJumping(Activity &idealActivity);
+	virtual bool	HandleDucking(Activity &idealActivity);
+	virtual bool	HandleSwimming(Activity &idealActivity);
 
 
 private:

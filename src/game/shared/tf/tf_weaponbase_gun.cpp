@@ -33,12 +33,12 @@
 //
 // TFWeaponBase Gun tables.
 //
-IMPLEMENT_NETWORKCLASS_ALIASED(TFWeaponBaseGun, DT_TFWeaponBaseGun)
+IMPLEMENT_NETWORKCLASS_ALIASED( TFWeaponBaseGun, DT_TFWeaponBaseGun )
 
-BEGIN_NETWORK_TABLE(CTFWeaponBaseGun, DT_TFWeaponBaseGun)
+BEGIN_NETWORK_TABLE( CTFWeaponBaseGun, DT_TFWeaponBaseGun )
 END_NETWORK_TABLE()
 
-BEGIN_PREDICTION_DATA(CTFWeaponBaseGun)
+BEGIN_PREDICTION_DATA( CTFWeaponBaseGun )
 END_PREDICTION_DATA()
 
 // Server specific.
@@ -173,11 +173,6 @@ CBaseEntity *CTFWeaponBaseGun::FireProjectile( CTFPlayer *pPlayer )
 	case TF_PROJECTILE_SYRINGE:
 		pProjectile = FireNail( pPlayer, iProjectile );
 		pPlayer->DoAnimationEvent( PLAYERANIMEVENT_ATTACK_PRIMARY );
-		break;
-
-	case TF_PROJECTILE_NAIL:
-		pProjectile = FireNail(pPlayer, iProjectile);
-		pPlayer->DoAnimationEvent(PLAYERANIMEVENT_ATTACK_PRIMARY);
 		break;
 
 	case TF_PROJECTILE_PIPEBOMB:
@@ -379,10 +374,6 @@ CBaseEntity *CTFWeaponBaseGun::FireNail( CTFPlayer *pPlayer, int iSpecificNail )
 		pProjectile = CTFProjectile_Syringe::Create( vecSrc, angForward, pPlayer, pPlayer, IsCurrentAttackACrit() );
 		break;
 
-	case TF_PROJECTILE_NAIL:
-		pProjectile = CTFProjectile_Nail::Create(vecSrc, angForward, pPlayer, pPlayer, IsCurrentAttackACrit());
-		break;
-
 	default:
 		Assert(0);
 	}
@@ -505,18 +496,14 @@ void CTFWeaponBaseGun::DoFireEffects()
 
 	// Muzzle flash on weapon.
 	bool bMuzzleFlash = true;
-
-	// We no longer need this
-	/*
 	if ( pPlayer->IsPlayerClass( TF_CLASS_HEAVYWEAPONS ) )
 	{
-		//CTFWeaponBase *pWeapon = pPlayer->GetActiveTFWeapon();
-		//if ( pWeapon && pWeapon->GetWeaponID() == TF_WEAPON_MINIGUN )
-		if (pPlayer->IsActiveTFWeapon(TF_WEAPON_MINIGUN))
+		CTFWeaponBase *pWeapon = pPlayer->GetActiveTFWeapon();
+		if ( pWeapon && pWeapon->GetWeaponID() == TF_WEAPON_MINIGUN )
 		{
 			bMuzzleFlash = false;
 		}
-	}*/
+	}
 
 	if ( bMuzzleFlash )
 	{

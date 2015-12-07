@@ -20,7 +20,7 @@
 
 #include "vguicenterprint.h"
 #include "tf_controls.h"
-#include "basemodelpanel.h"
+#include "tf_modelpanel.h"
 #include "tf_teammenu.h"
 #include <convar.h>
 #include "IGameUIFuncs.h" // for key bindings
@@ -254,7 +254,7 @@ CTFTeamMenu::CTFTeamMenu( IViewPort *pViewPort ) : CTeamMenu( pViewPort )
 	m_pRedTeamButton = new CTFTeamButton( this, "teambutton1" );
 	m_pAutoTeamButton = new CTFTeamButton( this, "teambutton2" );
 	m_pSpecTeamButton = new CTFTeamButton( this, "teambutton3" );
-	m_pSpecLabel = new CExLabel(this, "TeamMenuSpectate", "");
+	m_pSpecLabel = new CTFLabel( this, "TeamMenuSpectate", "" );
 
 #ifdef _X360
 	m_pFooter = new CTFFooter( this, "Footer" );
@@ -554,14 +554,6 @@ void CTFTeamMenu::OnCommand( const char *command )
 			{
 				iTeam = TF_TEAM_BLUE;
 			}
-			/*else if (Q_stricmp(pTeam, "green") == 0)
-			{
-				iTeam = TF_TEAM_GREEN;
-			}
-			else if (Q_stricmp(pTeam, "yellow") == 0)
-			{
-				iTeam = TF_TEAM_YELLOW;
-			}*/
 
 			if ( iTeam == TF_TEAM_RED && m_bRedDisabled )
 			{

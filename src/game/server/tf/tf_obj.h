@@ -208,9 +208,6 @@ public:
 
 	const char		*GetResponseRulesModifier( void );
 
-	// Upgrades
-	int				GetUpgradeLevel(void) { return m_iUpgradeLevel; }
-
 public:		
 
 	virtual bool TestHitboxes( const Ray_t &ray, unsigned int fContentsMask, trace_t& tr );
@@ -296,11 +293,6 @@ protected:
 	CNetworkVector( m_vecBuildMins );
 	CNetworkHandle( CBaseEntity, m_hBuiltOnEntity );
 	int				m_iBuiltOnPoint;
-
-	// Upgrade specific
-	// Upgrade Level ( 1, 2, 3 )
-	CNetworkVar(int, m_iUpgradeLevel);
-	CNetworkVar(int, m_iUpgradeMetal);
 
 	bool	m_bDying;
 

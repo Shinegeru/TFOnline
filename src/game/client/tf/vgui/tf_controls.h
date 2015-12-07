@@ -46,13 +46,13 @@ private:
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-class CExLabel : public vgui::Label
+class CTFLabel : public vgui::Label
 {
 public:
-	DECLARE_CLASS_SIMPLE( CExLabel, vgui::Label );
+	DECLARE_CLASS_SIMPLE( CTFLabel, vgui::Label );
 
-	CExLabel(vgui::Panel *parent, const char *panelName, const char *text);
-	CExLabel(vgui::Panel *parent, const char *panelName, const wchar_t *wszText);
+	CTFLabel( vgui::Panel *parent, const char *panelName, const char *text );
+	CTFLabel( vgui::Panel *parent, const char *panelName, const wchar_t *wszText );
 
 	virtual void ApplySettings( KeyValues *inResourceData );
 	virtual void ApplySchemeSettings( vgui::IScheme *pScheme );

@@ -366,7 +366,7 @@ void CTFHudTimeStatus::SetTimeAdded( int iIndex, int nSeconds )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CTFHudTimeStatus::CheckClockLabelLength( CExLabel *pLabel, CTFImagePanel *pBG)
+void CTFHudTimeStatus::CheckClockLabelLength( CTFLabel *pLabel, CTFImagePanel *pBG )
 {
 	if ( !pLabel || ! pBG )
 		return;
@@ -492,19 +492,19 @@ void CTFHudTimeStatus::ApplySchemeSettings( IScheme *pScheme )
 	// load control settings...
 	LoadControlSettings( "resource/UI/HudObjectiveTimePanel.res" );
 
-	m_pTimeValue = dynamic_cast<CExLabel *>(FindChildByName("TimePanelValue"));
+	m_pTimeValue = dynamic_cast<CTFLabel *>( FindChildByName( "TimePanelValue" ) );
 	m_pProgressBar = dynamic_cast<CTFProgressBar *>( FindChildByName( "TimePanelProgressBar" ) );
 
-	m_pOvertimeLabel = dynamic_cast<CExLabel *>(FindChildByName("OvertimeLabel"));
+	m_pOvertimeLabel = dynamic_cast<CTFLabel *>( FindChildByName( "OvertimeLabel" ) );
 	m_pOvertimeBG = dynamic_cast<CTFImagePanel *>( FindChildByName( "OvertimeBG" ) );
 
-	m_pSuddenDeathLabel = dynamic_cast<CExLabel *>(FindChildByName("SuddenDeathLabel"));
+	m_pSuddenDeathLabel = dynamic_cast<CTFLabel *>( FindChildByName( "SuddenDeathLabel" ) );
 	m_pSuddenDeathBG = dynamic_cast<CTFImagePanel *>( FindChildByName( "SuddenDeathBG" ) );
 
-	m_pWaitingForPlayersLabel = dynamic_cast<CExLabel *>(FindChildByName("WaitingForPlayersLabel"));
+	m_pWaitingForPlayersLabel = dynamic_cast<CTFLabel *>( FindChildByName( "WaitingForPlayersLabel" ) );
 	m_pWaitingForPlayersBG = dynamic_cast<CTFImagePanel *>( FindChildByName("WaitingForPlayersBG" ) );
 
-	m_pSetupLabel = dynamic_cast<CExLabel *>(FindChildByName("SetupLabel"));
+	m_pSetupLabel = dynamic_cast<CTFLabel *>( FindChildByName( "SetupLabel" ) );
 	m_pSetupBG = dynamic_cast<CTFImagePanel *>( FindChildByName("SetupBG" ) );
 
 	m_flNextThink = 0.0f;
@@ -687,92 +687,48 @@ void CTFHudObjectiveStatus::SetVisiblePanels( void )
 	if ( !TFGameRules() )
 		return;
 
-	TurnOffPanels();
-
-	if (TFGameRules()->GetHudType())
+	// only draw the flag panel for CTF maps
+	if ( TFGameRules()->GetGameType() == TF_GAMETYPE_CTF )
 	{
-		switch (TFGameRules()->GetHudType())
+		// turn on the flag panel
+		if ( m_pFlagPanel && !m_pFlagPanel->IsVisible() )
 		{
-		case TF_GAMETYPE_CTF:
-			// turn on the flag panel
-			if (m_pFlagPanel && !m_pFlagPanel->IsVisible())
-			{
-				m_pFlagPanel->SetVisible(true);
-			}
-			return;
-			break;
+			m_pFlagPanel->SetVisible( true );
+		}
 
-		case TF_GAMETYPE_CP:
-			// turn on the control point icons
-			if (m_pControlPointIconsPanel && !m_pControlPointIconsPanel->IsVisible())
-			{
-				m_pControlPointIconsPanel->SetVisible(true);
-			}
-			return;
-			break;
-
-		case TF_GAMETYPE_ESCORT:
-			// turn on the payload panel
-
-			// turn on the control point icons because we don't have a payload hud yet
-			if (m_pControlPointIconsPanel && !m_pControlPointIconsPanel->IsVisible())
-			{
-				m_pControlPointIconsPanel->SetVisible(true);
-			}
-			return;
-			break;
-
-		default:
-			break;
+		// turn off the control point icons
+		if ( m_pControlPointIconsPanel && m_pControlPointIconsPanel->IsVisible() )
+		{
+			m_pControlPointIconsPanel->SetVisible( false );
 		}
 	}
-
-	switch (TFGameRules()->GetGameType())
+	else if ( TFGameRules()->GetGameType() == TF_GAMETYPE_CP )
 	{
-		case TF_GAMETYPE_CTF:
-			// turn on the flag panel
-			if (m_pFlagPanel && !m_pFlagPanel->IsVisible())
-			{
-				m_pFlagPanel->SetVisible(true);
-			}
-			break;
+		// turn on the control point icons
+		if ( m_pControlPointIconsPanel && !m_pControlPointIconsPanel->IsVisible() )
+		{
+			m_pControlPointIconsPanel->SetVisible( true );
+		}
 
-		case TF_GAMETYPE_CP:
-			// turn on the control point icons
-			if (m_pControlPointIconsPanel && !m_pControlPointIconsPanel->IsVisible())
-			{
-				m_pControlPointIconsPanel->SetVisible(true);
-			}
-			break;
-
-		case TF_GAMETYPE_ESCORT:
-			// turn on the payload panel
-			
-			// turn on the control point icons because we don't have a payload hud yet
-			if (m_pControlPointIconsPanel && !m_pControlPointIconsPanel->IsVisible())
-			{
-				m_pControlPointIconsPanel->SetVisible(true);
-			}
-			break;
-
-		default:
-			break;
-
+		// turn off the flag panel
+		if ( m_pFlagPanel && m_pFlagPanel->IsVisible() )
+		{
+			m_pFlagPanel->SetVisible( false );
+		}
 	}
-}
-
-void CTFHudObjectiveStatus::TurnOffPanels()
-{
-	// turn off the flag panel
-	if (m_pFlagPanel && m_pFlagPanel->IsVisible())
+	else
 	{
-		m_pFlagPanel->SetVisible(false);
-	}
+		// turn off the flag panel
+		if ( m_pFlagPanel && m_pFlagPanel->IsVisible() )
+		{
+			m_pFlagPanel->SetVisible( false );
+		}
 
-	// turn off the control point icons
-	if (m_pControlPointIconsPanel && m_pControlPointIconsPanel->IsVisible())
-	{
-		m_pControlPointIconsPanel->SetVisible(false);
+		// turn off the control point icons
+		if ( m_pControlPointIconsPanel && m_pControlPointIconsPanel->IsVisible() )
+		{
+			m_pControlPointIconsPanel->SetVisible( false );
+		}
 	}
 }
 

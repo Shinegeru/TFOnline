@@ -96,7 +96,6 @@ END_DATADESC()
 
 
 IMPLEMENT_SERVERCLASS_ST(CBaseObject, DT_BaseObject)
-	SendPropInt(SENDINFO(m_iUpgradeLevel), 3),
 	SendPropInt(SENDINFO(m_iHealth), 13 ),
 	SendPropInt(SENDINFO(m_iMaxHealth), 13 ),
 	SendPropBool(SENDINFO(m_bHasSapper) ),
@@ -112,7 +111,6 @@ IMPLEMENT_SERVERCLASS_ST(CBaseObject, DT_BaseObject)
 	SendPropVector( SENDINFO( m_vecBuildMins ), -1, SPROP_COORD ),
 	SendPropInt( SENDINFO( m_iDesiredBuildRotations ), 2, SPROP_UNSIGNED ),
 	SendPropBool( SENDINFO( m_bServerOverridePlacement ) ),
-	SendPropInt( SENDINFO(m_iUpgradeMetal), 10),
 END_SEND_TABLE();
 
 bool PlayerIndexLessFunc( const int &lhs, const int &rhs )	
@@ -286,9 +284,6 @@ void CBaseObject::Spawn( void )
 	m_takedamage = DAMAGE_YES;
 	m_flHealth = m_iMaxHealth = m_iHealth;
 	m_iKills = 0;
-
-	m_iUpgradeLevel = 1;
-	m_iUpgradeMetal = 0;
 
 	SetContextThink( &CBaseObject::BaseObjectThink, gpGlobals->curtime + 0.1, OBJ_BASE_THINK_CONTEXT );
 

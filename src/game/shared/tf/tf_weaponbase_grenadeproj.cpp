@@ -166,13 +166,12 @@ void CTFWeaponBaseGrenadeProj::OnDataChanged( DataUpdateType_t type )
 //-----------------------------------------------------------------------------
 CTFWeaponBaseGrenadeProj *CTFWeaponBaseGrenadeProj::Create( const char *szName, const Vector &position, const QAngle &angles, 
 													   const Vector &velocity, const AngularImpulse &angVelocity, 
-													   CBaseCombatCharacter *pOwner, const CTFWeaponInfo &weaponInfo, float timer, int iFlags )
+													   CBaseCombatCharacter *pOwner, const CTFWeaponInfo &weaponInfo, int iFlags )
 {
 	CTFWeaponBaseGrenadeProj *pGrenade = static_cast<CTFWeaponBaseGrenadeProj*>( CBaseEntity::Create( szName, position, angles, pOwner ) );
 	if ( pGrenade )
 	{
 		pGrenade->InitGrenade( velocity, angVelocity, pOwner, weaponInfo );
-		pGrenade->SetDetonateTimerLength( timer );
 	}
 
 	return pGrenade;
@@ -234,11 +233,8 @@ void CTFWeaponBaseGrenadeProj::Spawn( void )
 
 	m_takedamage = DAMAGE_EVENTS_ONLY;
 
-	if (GetThrower())
-	{
-		// Set the team.
-		ChangeTeam(GetThrower()->GetTeamNumber());
-	}
+	// Set the team.
+	ChangeTeam( GetThrower()->GetTeamNumber() );
 
 	// Set skin based on team ( red = 1, blue = 2 )
 	m_nSkin = ( GetTeamNumber() == TF_TEAM_BLUE ) ? 1 : 0;

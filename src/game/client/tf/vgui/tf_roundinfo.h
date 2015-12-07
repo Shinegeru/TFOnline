@@ -50,7 +50,7 @@ protected:
 protected:
 	IViewPort			*m_pViewPort;
 
-	CExLabel			*m_pTitle;
+	CTFLabel			*m_pTitle;
 	vgui::ImagePanel	*m_pMapImage;
 	
 #ifdef _X360

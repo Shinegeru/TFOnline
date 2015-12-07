@@ -116,7 +116,7 @@ void CTFClassMenu::PerformLayout()
 	BaseClass::PerformLayout();
 
 #ifndef _X360
-	m_pCountLabel = dynamic_cast< CExLabel * >(FindChildByName("CountLabel"));
+	m_pCountLabel = dynamic_cast< CTFLabel * >( FindChildByName( "CountLabel" ) );
 
 	if ( m_pCountLabel )
 	{
