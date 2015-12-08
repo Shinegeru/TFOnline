@@ -18,7 +18,7 @@
 	
 	"titlelabel"
 	{
-		"ControlName"		"CExLabel"
+		"ControlName"		"CTFLabel"
 		"fieldName"			"titlelabel"
 		"xpos"				"0"
 		"ypos"				"0"
@@ -173,7 +173,7 @@
 	
 	"VideoCaption"
 	{
-		"ControlName"	"CExLabel"
+		"ControlName"	"CTFLabel"
 		"fieldName"		"VideoCaption"
 		"xpos"			"c-145"
 		"ypos"			"c40"

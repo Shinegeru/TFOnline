@@ -2,7 +2,7 @@
 {
 	"classNameLabel"
 	{
-		"ControlName"	"CExLabel"
+		"ControlName"	"CTFLabel"
 		"fieldName"		"classNameLabel"
 		"xpos"			"355"
 		"ypos"			"160"

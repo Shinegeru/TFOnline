@@ -18,7 +18,7 @@
 	
 	"TFMessageTitle"
 	{
-		"ControlName"	"CExLabel"
+		"ControlName"	"CTFLabel"
 		"fieldName"		"TFMessageTitle"
 		"xpos"			"c-184"
 		"ypos"			"95"

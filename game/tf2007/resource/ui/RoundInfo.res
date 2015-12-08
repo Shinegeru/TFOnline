@@ -32,7 +32,7 @@
 	
 	"Title"
 	{
-		"ControlName"	"CExLabel"
+		"ControlName"	"CTFLabel"
 		"fieldName"		"Title"
 		"xpos"			"c-215"
 		"ypos"			"85"
@@ -53,7 +53,7 @@
 	
 	"Mapname"
 	{
-		"ControlName"	"CExLabel"
+		"ControlName"	"CTFLabel"
 		"fieldName"		"Mapname"
 		"xpos"			"c-215"
 		"ypos"			"120"

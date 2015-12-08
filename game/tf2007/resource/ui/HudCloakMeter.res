@@ -21,7 +21,7 @@
 	
 	"CloakLabel"
 	{
-		"ControlName"	"CExLabel"
+		"ControlName"	"CTFLabel"
 		"fieldName"		"CloakLabel"
 		"xpos"			"25"
 		"ypos"			"27"

@@ -1,7 +1,0 @@
-background01
-tc_hydro
-cp_well
-cp_granary
-cp_dustbowl
-cp_gravelpit
-ctf_2fort

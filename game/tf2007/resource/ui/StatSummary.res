@@ -26,7 +26,7 @@
 	}
 	"OnYourWayLabel" [$WIN32]
 	{
-		"ControlName"		"CExLabel"
+		"ControlName"		"CTFLabel"
 		"fieldName"		"OnYourWayLabel"
 		"font"			"HudFontMediumBold"
 		"labelText"		"#LoadingMap"
@@ -43,7 +43,7 @@
 	}					
 	"MapLabel"
 	{
-		"ControlName"		"CExLabel"
+		"ControlName"		"CTFLabel"
 		"fieldName"		"MapLabel"
 		"font"			"HudFontMediumBigBold" [$WIN32]
 		"font"			"HudFontMediumBold" [$X360]

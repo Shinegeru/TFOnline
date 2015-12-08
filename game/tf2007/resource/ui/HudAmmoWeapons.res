@@ -20,9 +20,29 @@
 		"teambg_3"		"../hud/ammo_blue_bg"
 		"teambg_3_lodef"	"../hud/ammo_blue_bg_lodef"			
 	}
+	"WeaponBucket"
+	{
+		"ControlName"	"ImagePanel"
+		"fieldName"		"WeaponBucket"
+		"xpos"			"0"	[$WIN32]
+		"xpos_minmode"	"0"	[$WIN32]
+		"ypos"			"0"	[$WIN32]
+		"ypos_minmode"	"0"	[$WIN32]
+		"xpos"			"0"	[$X360]
+		"ypos"			"0"	[$X360]
+		"zpos"			"2"
+		"wide"			"120"
+		"wide_minmode"	"37"
+		"tall"			"60"
+		"tall_minmode"	"37"
+		"visible"		"1"
+		"enabled"		"1"
+		"image"			""
+		"scaleImage"	"1"	
+	}
 	"AmmoInClip"
 	{
-		"ControlName"	"CExLabel"
+		"ControlName"	"CTFLabel"
 		"fieldName"		"AmmoInClip"
 		"font"			"HudFontGiantBold"
 		"fgcolor"		"TanLight"
@@ -44,7 +64,7 @@
 	}		
 	"AmmoInClipShadow"
 	{
-		"ControlName"	"CExLabel"
+		"ControlName"	"CTFLabel"
 		"fieldName"		"AmmoInClipShadow"
 		"font"			"HudFontGiantBold"
 		"fgcolor"		"Black"
@@ -69,7 +89,7 @@
 	}						
 	"AmmoInReserve"
 	{
-		"ControlName"	"CExLabel"
+		"ControlName"	"CTFLabel"
 		"fieldName"		"AmmoInReserve"
 		"font"			"HudFontMediumSmall"
 		"font_lodef"	"HudFontMedium"
@@ -90,7 +110,7 @@
 	}		
 	"AmmoInReserveShadow"
 	{
-		"ControlName"	"CExLabel"
+		"ControlName"	"CTFLabel"
 		"fieldName"		"AmmoInReserveShadow"
 		"font"			"HudFontMediumSmall"
 		"font_lodef"	"HudFontMedium"
@@ -111,7 +131,7 @@
 	}									
 	"AmmoNoClip"
 	{
-		"ControlName"	"CExLabel"
+		"ControlName"	"CTFLabel"
 		"fieldName"		"AmmoNoClip"
 		"font"			"HudFontGiantBold"
 		"fgcolor"		"TanLight"
@@ -131,7 +151,7 @@
 	}	
 	"AmmoNoClipShadow"
 	{
-		"ControlName"	"CExLabel"
+		"ControlName"	"CTFLabel"
 		"fieldName"		"AmmoNoClipShadow"
 		"font"			"HudFontGiantBold"
 		"fgcolor"		"Black"

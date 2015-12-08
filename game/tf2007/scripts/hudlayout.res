@@ -16,14 +16,14 @@
 		"fieldName" "HudWeaponAmmo"
 		"visible" "1"
 		"enabled" "1"
-		"xpos"	"r99"	[$WIN32]
+		"xpos"	"r119"	[$WIN32]
 		"xpos_minmode"	"r85"	[$WIN32]
-		"ypos"	"r55"	[$WIN32]
+		"ypos"	"r85"	[$WIN32]
 		"ypos_minmode"	"r36"	[$WIN32]
 		"xpos"	"r131"	[$X360]
 		"ypos"	"r77"	[$X360]
-		"wide"	"90"
-		"tall"	"45"
+		"wide"	"110"
+		"tall"	"90"
 	}
 	
 	HudObjectiveStatus
@@ -714,9 +714,9 @@
 		"visible"				"1"
 		"enabled"				"1"
 		"xpos"					"c-150"
-		"ypos"					"215"
+		"ypos"					"255"
 		"wide"					"300"
-		"tall"					"300"
+		"tall"					"200"
 	}
 
 	StatPanel

@@ -17,7 +17,7 @@
 	
 	"MapInfoTitle"
 	{
-		"ControlName"	"CExLabel"
+		"ControlName"	"CTFLabel"
 		"fieldName"		"MapInfoTitle"
 		"xpos"			"c-184"
 		"xpos_lodef"			"c-174"	
@@ -39,7 +39,7 @@
 	
 	"MapInfoType"
 	{
-		"ControlName"	"CExLabel"
+		"ControlName"	"CTFLabel"
 		"fieldName"		"MapInfoType"
 		"xpos"			"c-184"
 		"xpos_lodef"			"c-174"

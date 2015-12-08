@@ -18,7 +18,7 @@
 	
 	"TitleLabel"
 	{	
-		"ControlName"	"CExLabel"
+		"ControlName"	"CTFLabel"
 		"fieldName"		"TitleLabel"
 		"font"			"HudFontGiantBold"
 		"xpos"			"19"			// align me to the left edge of the first selection
@@ -39,7 +39,7 @@
 	
 	"TitleLabelDropshadow"
 	{	
-		"ControlName"	"CExLabel"
+		"ControlName"	"CTFLabel"
 		"fieldName"		"TitleLabelDropshadow"
 		"font"			"HudFontGiantBold"
 		"fgcolor"		"Black"
@@ -322,7 +322,7 @@
 	
 	"TeamToggleHintIcon"
 	{
-		"ControlName"	"CExLabel"
+		"ControlName"	"CTFLabel"
 		"fieldName"		"TeamToggleHintIcon"
 		"font"			"GameUIButtons"
 		"xpos"			"130"
@@ -342,7 +342,7 @@
 	
 	"TeamToggleHintLabel"
 	{
-		"ControlName"	"CExLabel"
+		"ControlName"	"CTFLabel"
 		"fieldName"		"TeamToggleHintLabel"
 		"font"			"ScoreboardMedium"
 		"xpos"			"155"
@@ -362,7 +362,7 @@
 	
 	"DisguiseHintIcon"
 	{
-		"ControlName"	"CExLabel"
+		"ControlName"	"CTFLabel"
 		"fieldName"		"DisguiseHintIcon"
 		"font"			"GameUIButtons"
 		"xpos"			"280"
@@ -382,7 +382,7 @@
 	
 	"DisguiseHintLabel"
 	{
-		"ControlName"	"CExLabel"
+		"ControlName"	"CTFLabel"
 		"fieldName"		"DisguiseHintLabel"
 		"font"			"ScoreboardMedium"
 		"xpos"			"305"
@@ -402,7 +402,7 @@
 		
 	"CancelHintIcon"
 	{
-		"ControlName"	"CExLabel"
+		"ControlName"	"CTFLabel"
 		"fieldName"		"CancelHintIcon"
 		"font"			"GameUIButtons"
 		"xpos"			"20"
@@ -422,7 +422,7 @@
 	
 	"CancelHintLabel"
 	{
-		"ControlName"	"CExLabel"
+		"ControlName"	"CTFLabel"
 		"fieldName"		"CancelHintLabel"
 		"font"			"ScoreboardMedium"
 		"xpos"			"45"
