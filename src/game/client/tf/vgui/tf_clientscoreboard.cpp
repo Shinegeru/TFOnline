@@ -395,11 +395,7 @@ void CTFClientScoreBoardDialog::UpdatePlayerList()
 			{
 				C_TFPlayer *pPlayerOther = ToTFPlayer( UTIL_PlayerByIndex( playerIndex ) );
 
-#ifdef _X360
 				bool bUseTruncatedNames = true;
-#else
-				bool bUseTruncatedNames = false;
-#endif
 
 				if ( pPlayerOther && pPlayerOther->m_Shared.IsPlayerDominated( pLocalPlayer->entindex() ) )
 				{
