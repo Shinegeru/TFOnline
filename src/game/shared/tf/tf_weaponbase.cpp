@@ -37,6 +37,8 @@
 
 extern ConVar tf_useparticletracers;
 
+ConVar tf_weapon_criticals( "tf_weapon_criticals", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Controls random critical hits for weapons.\n0 - Never randomly crit. \n1 - Enable random crits. \n2 - Always crit.", true, 0, true, 2 );
+
 //=============================================================================
 //
 // Global functions.
@@ -473,11 +475,21 @@ bool CTFWeaponBase::CalcIsAttackCriticalHelper()
 	CTFPlayer *pPlayer = ToTFPlayer( GetPlayerOwner() );
 	if ( !pPlayer )
 		return false;
-
-	float flPlayerCritMult = pPlayer->GetCritMult();
-
+	
+	int nCvarValueCrit = tf_weapon_criticals.GetInt();
+	
+	// Don't bother checking if random crits are off
+	if ( nCvarValueCrit == 0 )
+		return false;
+	
 	if ( !CanFireCriticalShot() )
 		return false;
+	
+	// Always crit when allcrits are enabled
+	if ( nCvarValueCrit == 2 )
+		return true;
+
+	float flPlayerCritMult = pPlayer->GetCritMult();
 
 	if ( m_pWeaponInfo->GetWeaponData( m_iWeaponMode ).m_bUseRapidFireCrits )
 	{

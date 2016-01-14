@@ -1,4 +1,4 @@
-soundscapes_manifest
+	soundscapes_manifest
 {
 
 		"file"		"scripts/soundscapes.txt"
@@ -12,5 +12,4 @@ soundscapes_manifest
 		"file"		"scripts/soundscapes_gravelpit.txt"
 		"file"		"scripts/soundscapes_hydro.txt"
 		"file"		"scripts/soundscapes_granary.txt"
-
-}
+}	

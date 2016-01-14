@@ -89,7 +89,7 @@ ConVar tf_max_voice_speak_delay( "tf_max_voice_speak_delay", "1.5", FCVAR_NOTIFY
 
 ConVar tf_allow_player_use( "tf_allow_player_use", "0", FCVAR_NOTIFY, "Allow players to execute + use while playing." );
 
-ConVar tf_allow_sliding_taunt( "tf_allow_sliding_taunt", "0", 0, "Allow player to slide for a bit after taunting." );
+ConVar tf_allow_sliding_taunt( "tf_allow_sliding_taunt", "1", 0, "Allow player to slide for a bit after taunting." );
 
 extern ConVar spec_freeze_time;
 extern ConVar spec_freeze_traveltime;
@@ -5620,7 +5620,10 @@ void CTFPlayer::Taunt( void )
 		m_angTauntCamera = EyeAngles();
 
 		// Slam velocity to zero.
-		SetAbsVelocity( vec3_origin );
+		if ( !tf_allow_sliding_taunt.GetBool() )
+		{
+			SetAbsVelocity( vec3_origin );
+		}
 	}
 
 	pExpresser->DisallowMultipleScenes();

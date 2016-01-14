@@ -16,12 +16,28 @@
 		"iconColor"		"255 255 255 255"
 	}
 	
+	"SpyIcon"
+	{
+		"ControlName"	"CIconPanel"
+		"fieldName"		"SpyIcon"
+		"xpos"			"10"
+		"ypos"			"-2"
+		"zpos"			"1"
+		"wide"			"45"
+		"tall"			"45"
+		"visible"		"1"
+		"enabled"		"1"
+		"scaleImage"	"1"	
+		"icon"			"ico_spy"
+		"iconColor"		"255 255 255 255"
+	}
+	
 	"TitleLabel"
 	{	
 		"ControlName"	"CTFLabel"
 		"fieldName"		"TitleLabel"
 		"font"			"HudFontGiantBold"
-		"xpos"			"20"			// align me to the left edge of the first selection
+		"xpos"			"55"			// align me to the left edge of the first selection
 		"ypos"			"5"
 		"zpos"			"3"
 		"wide"			"360"
@@ -42,7 +58,7 @@
 		"fieldName"		"TitleLabelDropshadow"
 		"font"			"HudFontGiantBold"
 		"fgcolor"		"Black"
-		"xpos"			"20"			// align me to the left edge of the first selection
+		"xpos"			"55"			// align me to the left edge of the first selection
 		"ypos"			"6"
 		"zpos"			"3"
 		"wide"			"360"

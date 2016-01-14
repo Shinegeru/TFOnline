@@ -1381,6 +1381,15 @@
 			"height"	"256"
 		}
 		
+		"ico_spy"
+		{
+			"file"		"hud/ico_spy"
+			"x"		"0"
+			"y"		"0"
+			"width"		"256"
+			"height"	"256"
+		}
+		
 		"ico_key_blank"
 		{
 			"file"		"hud/ico_key_blank"

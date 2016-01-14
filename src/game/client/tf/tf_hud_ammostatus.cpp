@@ -76,7 +76,7 @@ void CTFHudWeaponAmmo::Reset()
 	m_flNextThink = gpGlobals->curtime + 0.05f;
 }
 
-ConVar tf2c_ammobucket("tf2c_ammobucket", "0", FCVAR_ARCHIVE, "Shows weapon bucket in the ammo section. 1 = ON, 0 = OFF.");
+ConVar tf_ammobucket("tf_ammobucket", "0", FCVAR_ARCHIVE, "Shows weapon bucket in the ammo section. 1 = ON, 0 = OFF.");
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -184,9 +184,8 @@ void CTFHudWeaponAmmo::OnThink()
 	{
 		bool bShowIcon = false;
 
-		if ( tf2c_ammobucket.GetBool() && pWeapon )
+		if ( tf_ammobucket.GetBool() && pWeapon )
 		{
-			// FIXME: need to add GRN and YLW icons to CTFWeaponInfo.
 			const CHudTexture *pTexture = pWeapon->GetSpriteInactive(); // red team
 			if ( pPlayer )
 			{

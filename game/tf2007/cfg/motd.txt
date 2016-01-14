@@ -7,3 +7,5 @@ Our map rotation is:
 - Well (CP)
 - 2Fort
 - Hydro (TC)
+- Well (CTF)
+- Badlands (CP)

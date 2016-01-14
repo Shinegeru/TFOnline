@@ -44,6 +44,9 @@ END_DATADESC()
 ConVar tf_meleeattackforcescale( "tf_meleeattackforcescale", "80.0", FCVAR_CHEAT | FCVAR_GAMEDLL | FCVAR_DEVELOPMENTONLY );
 #endif;
 
+ConVar tf_weapon_criticals_melee( "tf_weapon_criticals_melee", "1", FCVAR_NOTIFY | FCVAR_REPLICATED, "Controls random critical hits for melee weapons.\n0 - Never randomly crit, regardless of the tf_weapon_criticals setting. \n1 - Obey the tf_weapon_criticals setting. \n2 - Always crit, regardless of the tf_weapon_criticals setting.", true, 0, true, 2 );
+extern ConVar tf_weapon_criticals;
+
 //=============================================================================
 //
 // TFWeaponBase Melee functions.
@@ -359,6 +362,21 @@ bool CTFWeaponBaseMelee::CalcIsAttackCriticalHelper( void )
 	CTFPlayer *pPlayer = ToTFPlayer( GetPlayerOwner() );
 	if ( !pPlayer )
 		return false;
+	
+	int nCvarValueCrit = tf_weapon_criticals.GetInt();
+	int nCvarValueCritMelee = tf_weapon_criticals_melee.GetInt();
+	
+	// Don't bother checking if random crits are off
+	if ( nCvarValueCritMelee == 0 )
+		return false;
+	
+	// Turn melee crits off if random crits are disabled
+	if ( nCvarValueCritMelee == 1 && !tf_weapon_criticals.GetBool() )
+		return false;
+	
+	// Always crit when allcrits are enabled
+	if ( nCvarValueCritMelee == 2 || nCvarValueCrit == 2)
+		return true;
 
 	float flPlayerCritMult = pPlayer->GetCritMult();
 
