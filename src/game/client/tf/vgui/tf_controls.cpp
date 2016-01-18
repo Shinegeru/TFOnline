@@ -114,7 +114,7 @@ CTFRichText::CTFRichText( Panel *parent, const char *name ) : RichText( parent, 
 	m_pUpArrow = new CTFImagePanel( this, "UpArrow" );
 	if ( m_pUpArrow )
 	{
-		m_pUpArrow->SetShouldScaleImage( true );
+		//m_pUpArrow->SetShouldScaleImage( true );
 		m_pUpArrow->SetImage( "chalkboard_scroll_up" );
 		m_pUpArrow->SetFgColor( Color( 255, 255, 255, 255 ) );
 		m_pUpArrow->SetAlpha( 255 );
@@ -124,7 +124,7 @@ CTFRichText::CTFRichText( Panel *parent, const char *name ) : RichText( parent, 
 	m_pLine = new ImagePanel( this, "Line" );
 	if ( m_pLine )
 	{
-		m_pLine->SetShouldScaleImage( true );
+		//m_pLine->SetShouldScaleImage( true );
 		m_pLine->SetImage( "chalkboard_scroll_line" );
 		m_pLine->SetVisible( false );
 	}
@@ -132,7 +132,7 @@ CTFRichText::CTFRichText( Panel *parent, const char *name ) : RichText( parent, 
 	m_pDownArrow = new CTFImagePanel( this, "DownArrow" );
 	if ( m_pDownArrow )
 	{
-		m_pDownArrow->SetShouldScaleImage( true );
+		//m_pDownArrow->SetShouldScaleImage( true );
 		m_pDownArrow->SetImage( "chalkboard_scroll_down" );
 		m_pDownArrow->SetFgColor( Color( 255, 255, 255, 255 ) );
 		m_pDownArrow->SetAlpha( 255 );
@@ -142,7 +142,7 @@ CTFRichText::CTFRichText( Panel *parent, const char *name ) : RichText( parent, 
 	m_pBox = new ImagePanel( this, "Box" );
 	if ( m_pBox )
 	{
-		m_pBox->SetShouldScaleImage( true );
+		//m_pBox->SetShouldScaleImage( true );
 		m_pBox->SetImage( "chalkboard_scroll_box" );
 		m_pBox->SetVisible( false );
 	}

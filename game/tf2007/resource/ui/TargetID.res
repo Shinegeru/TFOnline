@@ -13,13 +13,19 @@
 		"pinCorner"		"0"
 		"visible"		"1"
 		"enabled"		"1"
-		"image"			"../hud/score_panel_blue_bg"
+		"image"			"../hud/color_panel_brown"
 		"scaleImage"		"1"
-		"teambg_1"		"../hud/freezecam_black_bg"
-		"teambg_2"		"../hud/freezecam_red_bg"
-		"teambg_2_lodef"	"../hud/freezecam_red_bg_lodef"
-		"teambg_3"		"../hud/freezecam_blue_bg"
-		"teambg_3_lodef"	"../hud/freezecam_blue_bg_lodef"
+		"teambg_1"		"../hud/color_panel_brown"
+		"teambg_2"		"../hud/color_panel_red"
+		"teambg_2_lodef"	"../hud/color_panel_red"
+		"teambg_3"		"../hud/color_panel_blu"
+		"teambg_3_lodef"	"../hud/color_panel_blu"
+		
+		"src_corner_height"		"23"				// pixels inside the image
+		"src_corner_width"		"23"
+			
+		"draw_corner_width"		"6"				// screen size of the corners ( and sides ), proportional
+		"draw_corner_height" 	"6"	
 	}
 	"TargetNameLabel"
 	{	
@@ -84,4 +90,23 @@
 		"HealthDeathWarningColor"	"HUDDeathWarning"
 		"TextColor"		"HudOffWhite"
 	}	
+	"AvatarImage"
+	{
+		"ControlName"	"CAvatarImagePanel"
+		"fieldName"		"AvatarImage"
+		"xpos"			"32"
+		"xpos_minmode"	"26"
+		"ypos"			"12"
+		"ypos_minmode"	"8"
+		"zpos"			"1"
+		"wide"			"14"
+		"wide_minmode"	"11"
+		"tall"			"14"
+		"tall_minmode"	"11"
+		"visible"		"1"
+		"enabled"		"1"
+		"image"			""
+		"scaleImage"	"1"	
+		"color_outline"	"52 48 45 255"
+	}
 }
