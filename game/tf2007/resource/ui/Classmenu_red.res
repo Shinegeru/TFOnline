@@ -414,6 +414,8 @@
 		"tabPosition"	"0"
 		"labelText"		"#TF_Cancel"
 		"textAlignment"	"center"
+		"dulltext"		"0"
+		"brighttext"	"0"
 		"Command"		"vguicancel"
 		"font"			"MenuSmallFont"
 	}

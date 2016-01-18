@@ -41,23 +41,9 @@ VERSION 1.0
 
 DESCRIPTION INFO_OPTIONS
 {
-	"mp_decals"
+	"cl_autoreload"
 	{
-		"#Valve_Multiplayer_Decal_Limit"
-		{ NUMBER 0 4096 }
-		{ "200" }
-	}
-
-	"hud_classautokill"
-	{
-		"#TF_classautokill"
-		{ BOOL }
-		{ "1" }
-	}
-	
-	"tf_medigun_autoheal"
-	{
-		"#TF_medigun_autoheal"
+		"#TF_autoreload"
 		{ BOOL }
 		{ "0" }
 	}
@@ -69,11 +55,129 @@ DESCRIPTION INFO_OPTIONS
 		{ "1" }
 	}
 	
+	"tf_medigun_autoheal"
+	{
+		"#TF_medigun_autoheal"
+		{ BOOL }
+		{ "0" }
+	}
+	
+	"cl_hud_minmode"
+	{
+		"#GameUI_EnableHUDMinMode"
+		{ BOOL }
+		{ "0" }
+	}
+	
+	"glow_outline_effect_enable"
+	{
+		"#TF_UseGlowEffect"
+		{ BOOL }
+		{ "1" }
+	}
+	
+	"viewmodel_fov"
+	{
+		"#TF_viewmodelfov_option"
+		{ SLIDER 54 70 }
+		{ "1" }
+	}
+	
+	"cl_wpn_sway_scale"
+	{
+		"#TF_wpn_sway"
+		{ SLIDER 0 5 }
+		{ "1" }
+	}
+	
+	"hud_freezecamhide"
+	{
+		"#TF_FreezeCamHide"
+		{ BOOL }
+		{ "0" }
+	}
+	
+	"tf_hud_target_id_alpha"
+	{
+		"#TF_TargetID_Alpha"
+		{ SLIDER 0 255 }
+		{ "255" }
+	}
+	
+	"tf_hud_target_id_show_avatars"
+	{
+		"#TF_TargetID_Avatars"
+		{ BOOL }
+		{ "1" }
+	}
+	
+	"tf_ammobucket"
+	{
+		"#TF_ammobucket"
+		{ BOOL }
+		{ "0" }
+	}
+	
+	"cl_disablehtmlmotd"
+	{
+		"#Valve_DisableHTMLMOTD"
+		{ BOOL }
+		{ "0" }
+	}
+	
+	"mp_decals"
+	{
+		"#Valve_Multiplayer_Decal_Limit"
+		{ NUMBER 0 4096 }
+		{ "200" }
+	}
+	
+	"mp_usehwmmodels"
+	{
+		"#GameUI_HighModels"
+		{ BOOL }
+		{ "0" }
+	}
+	
 	"hud_takesshots"
 	{
 		"#game_takesshots"
 		{ BOOL }
 		{ "0" }
-	}	
+	}
+	
+	"hud_classautokill"
+	{
+		"#TF_classautokill"
+		{ BOOL }
+		{ "1" }
+	}
+	
+	"r_drawviewmodel"
+	{
+		"#TF_drawviewmodel_option"
+		{ BOOL }
+		{ "1" }
+	}
+	
+	"cl_flipviewmodels"
+	{
+		"#TF_flipviewmodel_option"
+		{ BOOL }
+		{ "0" }
+	}
+	
+	"cl_playerspraydisable"
+	{
+		"#GameUI_DisableSprays"
+		{ BOOL }
+		{ "0" }
+	}
+	
+	"cl_customsounds"
+	{
+		"#TF_customsounds"
+		{ BOOL }
+		{ "1" }
+	}
 }
-

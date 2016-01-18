@@ -581,40 +581,39 @@
 	
 	HudVoiceSelfStatus
 	{
-		"fieldName" "HudVoiceSelfStatus"
-		"visible" "1"
-		"enabled" "1"
-		"xpos" "r42" 	[$WIN32]
-		"ypos" "355"	[$WIN32]
-		"xpos" "r75"	[$X360]
-		"ypos" "375"	[$X360]
-		"wide" "32"
-		"tall" "32"
+		"fieldName"		"HudVoiceSelfStatus"
+		"visible"		"1"
+		"enabled"		"1"
+		"xpos"			"r42"
+		"ypos"			"343"
+		"wide"			"32"
+		"tall"			"32"
 	}
-
+	
 	HudVoiceStatus
 	{
-		"fieldName" "HudVoiceStatus"
-		"visible" "1"
-		"enabled" "1"
-		"xpos" "r130" [$WIN32]
-		"ypos" "0" [$WIN32]
-		"xpos" "r195" [$X360]
-		"ypos" "0" [$X360]
-		"wide" "150"
-		"tall" "400"
-
-		"item_tall"	"16"
-		"item_wide"	"120"
-
-		"item_spacing" "2"
-
-		"icon_ypos"	"0"
-		"icon_xpos"	"0"
-		"icon_tall"	"16"
-		"icon_wide"	"16"
-
-		"text_xpos"	"18"
+		"fieldName"				"HudVoiceStatus"
+		"visible"				"1"
+		"enabled"				"1"
+		"xpos"					"r130"
+		"ypos"					"0"
+		"wide"					"150"
+		"tall"					"400"
+		
+		"item_wide"				"120"
+		"item_tall"				"28"
+		
+		"show_avatar"			"1"
+		"show_friend"			"0"
+		"avatar_xpos"			"2"
+		"avatar_ypos"			"2"
+		"avatar_wide"			"24"
+		"avatar_tall"			"24"
+		
+		"show_dead_icon"		"0"
+		"show_voice_icon"		"0"
+		
+		"text_xpos"				"30"
 	}
 
 	HudHintDisplay
@@ -826,7 +825,7 @@
 		"visible"		"1"
 		"enabled"		"1"
 		"xpos"			"r162"	[$WIN32]
-		"xpos_minmode"	"r110"	[$WIN32]
+		"xpos_minmode"	"r142"	[$WIN32]
 		"ypos"			"r52"	[$WIN32]
 		"ypos_minmode"	"r30"	[$WIN32]
 		"xpos"			"r194"	[$X360]

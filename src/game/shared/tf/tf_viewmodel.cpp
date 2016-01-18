@@ -56,9 +56,8 @@ CTFViewModel::~CTFViewModel()
 }
 
 #ifdef CLIENT_DLL
-// TODO:  Turning this off by setting interp 0.0 instead of 0.1 for now since we have a timing bug to resolve
 ConVar cl_wpn_sway_interp( "cl_wpn_sway_interp", "0.1", FCVAR_CLIENTDLL );
-ConVar cl_wpn_sway_scale( "cl_wpn_sway_scale", "1.0", FCVAR_CLIENTDLL );
+ConVar cl_wpn_sway_scale( "cl_wpn_sway_scale", "1.0", FCVAR_CLIENTDLL | FCVAR_ARCHIVE, "Intensity of the viewmodel sway effect" );
 #endif
 
 //-----------------------------------------------------------------------------

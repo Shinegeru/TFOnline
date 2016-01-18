@@ -34,6 +34,8 @@
 #include "c_tf_team.h"
 #include "c_tf_player.h"
 #include "vgui_avatarimage.h"
+#include "tf_gamerules.h"
+#include "tf_shareddefs.h"
 
 #if defined ( _X360 )
 #include "engine/imatchmaking.h"
@@ -44,6 +46,7 @@ using namespace vgui;
 #define SCOREBOARD_MAX_LIST_ENTRIES 12
 
 extern bool IsInCommentaryMode( void );
+extern const char *GetMapDisplayName( const char *mapName );
 
 //-----------------------------------------------------------------------------
 // Purpose: Constructor
@@ -58,6 +61,7 @@ CTFClientScoreBoardDialog::CTFClientScoreBoardDialog( IViewPort *pViewPort ) : C
 	m_pPlayerListBlue = new SectionedListPanel( this, "BluePlayerList" );
 	m_pPlayerListRed = new SectionedListPanel( this, "RedPlayerList" );
 	m_pLabelPlayerName = new CTFLabel( this, "PlayerNameLabel", "" );
+	m_pLabelMapName = new CTFLabel( this, "MapName", "" );
 	m_pImagePanelHorizLine = new ImagePanel( this, "HorizontalLine" );
 	m_pClassImage = new CTFClassImage( this, "ClassImage" );
 	m_iImageDead = 0;
@@ -221,6 +225,55 @@ void CTFClientScoreBoardDialog::Update()
 	UpdateSpectatorList();
 	UpdatePlayerDetails();
 	MoveToCenterOfScreen();
+	
+	// Not really sure where to put this
+	if (TFGameRules())
+	{
+		if (mp_timelimit.GetInt() > 0)
+		{
+			int iTimeLeft = TFGameRules()->GetTimeLeft();
+
+			char szHours[5];
+			char szMinutes[3];
+			char szSeconds[3];
+
+			wchar_t wszHours[5] = L"";
+			wchar_t wszMinutes[3] = L"";
+			wchar_t wszSeconds[3] = L"";
+
+			if (iTimeLeft <= 0)
+			{
+				Q_snprintf(szHours, sizeof(szHours), "0");
+				Q_snprintf(szMinutes, sizeof(szMinutes), "0");
+				Q_snprintf(szSeconds, sizeof(szSeconds), "00");
+			}
+			else
+			{
+				Q_snprintf(szHours,   sizeof(szHours), "%d", iTimeLeft / 3600);
+				Q_snprintf(szMinutes, sizeof(szMinutes), "%d", iTimeLeft / 60);
+				Q_snprintf(szSeconds, sizeof(szSeconds), "%02d", iTimeLeft % 60);
+			}
+
+			g_pVGuiLocalize->ConvertANSIToUnicode(szHours, wszHours, sizeof(wszHours));
+			g_pVGuiLocalize->ConvertANSIToUnicode(szMinutes, wszMinutes, sizeof(wszMinutes));
+			g_pVGuiLocalize->ConvertANSIToUnicode(szSeconds, wszSeconds, sizeof(wszSeconds));
+
+			wchar_t wzServerLabel[256] = L"";
+			if (iTimeLeft / 3600 > 0)
+			{
+				g_pVGuiLocalize->ConstructString(wzServerLabel, sizeof(wzServerLabel), g_pVGuiLocalize->Find("#Scoreboard_TimeLeft"), 3, wszHours, wszMinutes, wszSeconds);
+			}
+			else
+			{
+				g_pVGuiLocalize->ConstructString(wzServerLabel, sizeof(wzServerLabel), g_pVGuiLocalize->Find("#Scoreboard_TimeLeftNoHours"), 2, wszMinutes, wszSeconds);
+			}
+			SetDialogVariable("servertimeleft", wzServerLabel);
+		}
+		else
+		{
+			SetDialogVariable("servertimeleft", g_pVGuiLocalize->Find("#Scoreboard_NoTimeLimit"));
+		}
+	}
 
 	// update every second
 	m_fNextUpdateTime = gpGlobals->curtime + 1.0f; 
@@ -537,6 +590,7 @@ void CTFClientScoreBoardDialog::UpdatePlayerDetails()
 	SetDialogVariable( "teleports", roundStats.m_iStat[TFSTAT_TELEPORTS] );
 	SetDialogVariable( "headshots", roundStats.m_iStat[TFSTAT_HEADSHOTS] );
 	SetDialogVariable( "backstabs", roundStats.m_iStat[TFSTAT_BACKSTABS] );
+	SetDialogVariable( "damage", roundStats.m_iStat[TFSTAT_DAMAGE] );
 	SetDialogVariable( "playername", tf_PR->GetPlayerName( playerIndex ) );
 	SetDialogVariable( "playerscore", GetPointsString( tf_PR->GetTotalScore( playerIndex ) ) );
 	Color clr = g_PR->GetTeamColor( g_PR->GetTeam( playerIndex ) );
@@ -604,6 +658,9 @@ void CTFClientScoreBoardDialog::ClearPlayerDetails()
 
 	SetDialogVariable( "backstabs", "" );
 	SetControlVisible( "BackstabsLabel", bVisible );
+
+	SetDialogVariable( "damage", "" );
+	SetControlVisible( "DamageLabel", bVisible );
 
 	SetDialogVariable( "playername", "" );
 
@@ -690,6 +747,12 @@ void CTFClientScoreBoardDialog::FireGameEvent( IGameEvent *event )
 		g_pVGuiLocalize->ConvertANSIToUnicode( hostname, wzHostName, sizeof( wzHostName ) );
 		g_pVGuiLocalize->ConstructString( wzServerLabel, sizeof(wzServerLabel), g_pVGuiLocalize->Find( "#Scoreboard_Server" ), 1, wzHostName );
 		SetDialogVariable( "server", wzServerLabel );
+		// Set the level name after the server spawn
+		// FIXME: broken in Source SDK 2013 beta_test engine branch
+		char szMapName[MAX_MAP_NAME];
+		Q_FileBase( engine->GetLevelName(), szMapName, sizeof(szMapName) );
+		Q_strlower( szMapName );
+		SetDialogVariable( "mapname", GetMapDisplayName( szMapName ) );
 	}
 
 	if( IsVisible() )

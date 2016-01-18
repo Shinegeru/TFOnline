@@ -269,6 +269,22 @@
 		"visible"		"0"	[$X360]
 		"enabled"		"1"
 	}							
+	"ServerTimeLeft"
+	{
+		"ControlName"		"CTFLabel"
+		"fieldName"		"ServerTimeLeft"
+		"font"			"ScoreboardVerySmall"
+		"labelText"		"%servertimeleft%"
+		"textAlignment"		"east"
+		"xpos"			"285"
+		"ypos"			"60"
+		"wide"			"300"
+		"tall"			"20"
+		"autoResize"	"0"
+		"pinCorner"		"0"
+		"visible"		"1"
+		"enabled"		"1"
+	}
 	"BluePlayerList"
 	{
 		"ControlName"	"SectionedListPanel"
@@ -943,6 +959,59 @@
 		"visible"		"1"
 		"enabled"		"1"
 	}		
+	"DamageLabel"
+	{
+		"ControlName"	"CTFLabel"
+		"fieldName"		"DamageLabel"
+		"font"			"ScoreboardVerySmall"
+		"labelText"		"#TF_ScoreBoard_DamageLabel"
+		"textAlignment"	"north-east"
+		"xpos"			"445"
+		"ypos"			"380"
+		"zpos"			"3"
+		"wide"			"110"
+		"tall"			"40"
+		"autoResize"	"0"
+		"pinCorner"		"0"
+		"visible"		"1"
+		"enabled"		"1"
+	}
+	"Damage"
+	{
+		"ControlName"	"CTFLabel"
+		"fieldName"		"Damage"
+		"font"			"ScoreboardVerySmall"
+		"labelText"		"%damage%"
+		"textAlignment"	"north-west"	
+		"xpos"			"560"
+		"ypos"			"380"
+		"zpos"			"3"
+		"wide"			"35"
+		"tall"			"20"
+		"autoResize"	"0"
+		"pinCorner"		"0"
+		"visible"		"1"
+		"enabled"		"1"
+	}
+	"MapName"
+	{
+		"ControlName"	"CTFLabel"
+		"fieldName"		"MapName"
+		"font"			"ScoreboardMedium"
+		"labelText"		"%mapname%"
+		"textAlignment"	"east"
+		"xpos"			"440"
+		"xpos_lodef"	"399"
+		"xpos_hidef"	"439"
+		"ypos"			"390"
+		"zpos"			"3"
+		"wide"			"140"
+		"tall"			"20"
+		"autoResize"	"0"
+		"pinCorner"		"0"
+		"visible"		"1"
+		"enabled"		"1"
+	}
 	
 	"ButtonLegendBG"		[$X360]
 	{
