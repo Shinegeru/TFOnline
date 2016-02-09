@@ -275,6 +275,12 @@ void CTFClientScoreBoardDialog::Update()
 		}
 	}
 
+	// this works, apparently
+	char szMapName[MAX_MAP_NAME];
+	Q_FileBase( engine->GetLevelName(), szMapName, sizeof(szMapName) );
+	Q_strlower( szMapName );
+	SetDialogVariable( "mapname", GetMapDisplayName( szMapName ) );
+
 	// update every second
 	m_fNextUpdateTime = gpGlobals->curtime + 1.0f; 
 }
@@ -747,12 +753,6 @@ void CTFClientScoreBoardDialog::FireGameEvent( IGameEvent *event )
 		g_pVGuiLocalize->ConvertANSIToUnicode( hostname, wzHostName, sizeof( wzHostName ) );
 		g_pVGuiLocalize->ConstructString( wzServerLabel, sizeof(wzServerLabel), g_pVGuiLocalize->Find( "#Scoreboard_Server" ), 1, wzHostName );
 		SetDialogVariable( "server", wzServerLabel );
-		// Set the level name after the server spawn
-		// FIXME: broken in Source SDK 2013 beta_test engine branch
-		char szMapName[MAX_MAP_NAME];
-		Q_FileBase( engine->GetLevelName(), szMapName, sizeof(szMapName) );
-		Q_strlower( szMapName );
-		SetDialogVariable( "mapname", GetMapDisplayName( szMapName ) );
 	}
 
 	if( IsVisible() )
