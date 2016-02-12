@@ -3572,6 +3572,10 @@ void CTFPlayer::AmmoPackCleanUp( void )
 //-----------------------------------------------------------------------------
 void CTFPlayer::DropAmmoPack( void )
 {
+	// Since weapon is hidden in loser state don't drop ammo pack.
+	if ( m_Shared.IsLoser() )
+		return;
+
 	// We want the ammo packs to look like the player's weapon model they were carrying.
 	// except if they are melee or building weapons
 	CTFWeaponBase *pWeapon = NULL;

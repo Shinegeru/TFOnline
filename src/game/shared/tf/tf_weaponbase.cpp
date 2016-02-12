@@ -17,7 +17,7 @@
 // Client specific.
 #else
 #include "vgui/ISurface.h"
-#include "vgui_controls/controls.h"
+#include "vgui_controls/Controls.h"
 #include "c_tf_player.h"
 #include "tf_viewmodel.h"
 #include "hud_crosshair.h"
@@ -30,9 +30,9 @@
 #include "toolframework_client.h"
 
 // for spy material proxy
-#include "ProxyEntity.h"
-#include "materialsystem/IMaterial.h"
-#include "materialsystem/IMaterialVar.h"
+#include "proxyentity.h"
+#include "materialsystem/imaterial.h"
+#include "materialsystem/imaterialvar.h"
 #endif
 
 extern ConVar tf_useparticletracers;
@@ -1505,13 +1505,14 @@ void CTFWeaponBase::OnDataChanged( DataUpdateType_t type )
 
 	//Here we go...
 	//Since we can't get a repro for the invisible weapon thing, I'll fix it right up here:
-	CTFPlayer *pOwner = ToTFPlayer( GetOwnerEntity() );
+	C_TFPlayer *pOwner = GetTFPlayerOwner();
 
 	//Our owner is alive
 	if ( pOwner && pOwner->IsAlive() == true )
 	{
 		//And he is NOT taunting
-		if ( pOwner->m_Shared.InCond ( TF_COND_TAUNTING ) == false && pOwner->m_Shared.IsLoser() == false )
+		if ( pOwner->m_Shared.InCond ( TF_COND_TAUNTING ) == false &&
+			pOwner->m_Shared.IsLoser() == false )
 		{
 			//Then why the hell am I NODRAW?
 			if ( pOwner->GetActiveWeapon() == this && IsEffectActive( EF_NODRAW ) )
@@ -2112,6 +2113,17 @@ int CTFWeaponBase::GetSkin()
 	}
 
 	return nSkin;
+}
+
+//-----------------------------------------------------------------------------
+// Should this object cast shadows?
+//-----------------------------------------------------------------------------
+ShadowType_t CTFWeaponBase::ShadowCastType( void )
+{
+	if ( IsEffectActive( EF_NODRAW | EF_NOSHADOW ) || m_iState != WEAPON_IS_ACTIVE )
+		return SHADOWS_NONE;
+
+	return BaseClass::ShadowCastType();
 }
 
 bool CTFWeaponBase::OnFireEvent( C_BaseViewModel *pViewModel, const Vector& origin, const QAngle& angles, int event, const char *options )

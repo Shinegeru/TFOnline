@@ -1720,9 +1720,9 @@ void C_TFPlayer::ShowNemesisIcon( bool bShow )
 static Vector TF_TAUNTCAM_HULL_MIN( -9.0f, -9.0f, -9.0f );
 static Vector TF_TAUNTCAM_HULL_MAX( 9.0f, 9.0f, 9.0f );
 
-static ConVar tf_tauntcam_yaw( "tf_tauntcam_yaw", "0", FCVAR_CHEAT | FCVAR_DEVELOPMENTONLY );
-static ConVar tf_tauntcam_pitch( "tf_tauntcam_pitch", "0", FCVAR_CHEAT | FCVAR_DEVELOPMENTONLY );
-static ConVar tf_tauntcam_dist( "tf_tauntcam_dist", "110", FCVAR_CHEAT | FCVAR_DEVELOPMENTONLY );
+static ConVar tf_tauntcam_yaw( "tf_tauntcam_yaw", "0", FCVAR_CHEAT );
+static ConVar tf_tauntcam_pitch( "tf_tauntcam_pitch", "0", FCVAR_CHEAT );
+static ConVar tf_tauntcam_dist( "tf_tauntcam_dist", "150", FCVAR_CHEAT );
 
 ConVar setcamerathird("setcamerathird", "0", 0);
 
