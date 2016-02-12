@@ -513,7 +513,7 @@ const CObjectInfo* GetObjectInfo( int iObject )
 	return &g_ObjectInfos[iObject];
 }
 
-ConVar tf_cheapobjects( "tf_cheapobjects","0", FCVAR_CHEAT | FCVAR_DEVELOPMENTONLY | FCVAR_REPLICATED, "Set to 1 and all objects will cost 0" );
+ConVar tf_cheapobjects( "tf_cheapobjects","0", FCVAR_CHEAT | FCVAR_REPLICATED, "Set to 1 and all objects will cost 0" );
 
 //-----------------------------------------------------------------------------
 // Purpose: Return the cost of another object of the specified type

@@ -56,7 +56,7 @@ ConVar tf_obj_gib_maxspeed( "tf_obj_gib_maxspeed", "800", FCVAR_CHEAT | FCVAR_DE
 ConVar object_verbose( "object_verbose", "0", FCVAR_CHEAT | FCVAR_DEVELOPMENTONLY, "Debug object system." );
 ConVar obj_damage_factor( "obj_damage_factor","0", FCVAR_CHEAT | FCVAR_DEVELOPMENTONLY, "Factor applied to all damage done to objects" );
 ConVar obj_child_damage_factor( "obj_child_damage_factor","0.25", FCVAR_CHEAT | FCVAR_DEVELOPMENTONLY, "Factor applied to damage done to objects that are built on a buildpoint" );
-ConVar tf_fastbuild("tf_fastbuild", "0", FCVAR_CHEAT | FCVAR_DEVELOPMENTONLY );
+ConVar tf_fastbuild("tf_fastbuild", "0", FCVAR_CHEAT, "Increase construction speed" );
 ConVar tf_obj_ground_clearance( "tf_obj_ground_clearance", "32", FCVAR_CHEAT | FCVAR_DEVELOPMENTONLY, "Object corners can be this high above the ground" );
 
 extern short g_sModelIndexFireball;
