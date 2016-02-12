@@ -1224,7 +1224,7 @@ Scheme
 		{
 			"1"
 			{
-				"name"		"TF2"
+				"name"		"TF2 Secondary"
 				"tall"		"20"
 				"tall_hidef"	"24"
 				"tall_lodef"	"24"
@@ -1238,7 +1238,7 @@ Scheme
 		{
 			"1"
 			{
-				"name"		"TF2"
+				"name"		"TF2 Secondary"
 				"tall"		"34"
 				"tall_hidef"	"38"
 				"tall_lodef"	"38"

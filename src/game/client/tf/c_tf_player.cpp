@@ -1739,8 +1739,8 @@ void C_TFPlayer::TurnOnTauntCam( void )
 		return;
 
 	// Save the old view angles.
-	engine->GetViewAngles( m_angTauntEngViewAngles );
-	prediction->GetViewAngles( m_angTauntPredViewAngles );
+	/*engine->GetViewAngles( m_angTauntEngViewAngles );
+	prediction->GetViewAngles( m_angTauntPredViewAngles );*/
 
 	m_TauntCameraData.m_flPitch = tf_tauntcam_pitch.GetFloat();
 	m_TauntCameraData.m_flYaw =  tf_tauntcam_yaw.GetFloat();
@@ -1772,10 +1772,10 @@ void C_TFPlayer::TurnOffTauntCam( void )
 	if ( !IsLocalPlayer() )
 		return;	
 
-	Vector vecOffset = g_ThirdPersonManager.GetCameraOffsetAngles();
+	/*Vector vecOffset = g_ThirdPersonManager.GetCameraOffsetAngles();
 
 	tf_tauntcam_pitch.SetValue( vecOffset[PITCH] - m_angTauntPredViewAngles[PITCH] );
-	tf_tauntcam_yaw.SetValue( vecOffset[YAW] - m_angTauntPredViewAngles[YAW] );
+	tf_tauntcam_yaw.SetValue( vecOffset[YAW] - m_angTauntPredViewAngles[YAW] );*/
 
 	g_ThirdPersonManager.SetOverridingThirdPerson( false );
 	::input->CAM_ToFirstPerson();
@@ -1783,8 +1783,9 @@ void C_TFPlayer::TurnOffTauntCam( void )
 	::input->CAM_SetCameraThirdData( NULL, vec3_angle );
 
 	// Reset the old view angles.
-	engine->SetViewAngles( m_angTauntEngViewAngles );
-	prediction->SetViewAngles( m_angTauntPredViewAngles );
+	/*engine->SetViewAngles( m_angTauntEngViewAngles );
+	prediction->SetViewAngles( m_angTauntPredViewAngles );*/
+
 
 	// Force the feet to line up with the view direction post taunt.
 	m_PlayerAnimState->m_bForceAimYaw = true;
@@ -1808,7 +1809,7 @@ void C_TFPlayer::HandleTaunting( void )
 	C_TFPlayer *pLocalPlayer = C_TFPlayer::GetLocalTFPlayer();
 
 	// Clear the taunt slot.
-	if ( !m_bWasTaunting && m_Shared.InCond( TF_COND_TAUNTING ) )
+	if ( !m_bWasTaunting && ( m_Shared.InCond( TF_COND_TAUNTING ) || m_Shared.IsLoser() ) )
 	{
 		m_bWasTaunting = true;
 
@@ -1819,7 +1820,7 @@ void C_TFPlayer::HandleTaunting( void )
 		}
 	}
 
-	if ( m_bWasTaunting && !m_Shared.InCond( TF_COND_TAUNTING ) )
+	if ( m_bWasTaunting && ( !m_Shared.InCond( TF_COND_TAUNTING ) && !m_Shared.IsLoser() ) )
 	{
 		m_bWasTaunting = false;
 
@@ -2023,7 +2024,7 @@ extern ConVar cl_sidespeed;
 void C_TFPlayer::AvoidPlayers( CUserCmd *pCmd )
 {
 	// Turn off the avoid player code.
-	if ( !tf_avoidteammates.GetBool() )
+	if ( !tf_avoidteammates.GetBool() || !tf_avoidteammates_pushaway.GetBool() )
 		return;
 
 	// Don't test if the player doesn't exist or is dead.
@@ -3275,8 +3276,12 @@ void C_TFPlayer::FireEvent( const Vector& origin, const QAngle& angles, int even
 // Shadows
 
 ConVar cl_blobbyshadows( "cl_blobbyshadows", "0", FCVAR_CLIENTDLL );
+extern ConVar tf_disable_player_shadows;
 ShadowType_t C_TFPlayer::ShadowCastType( void ) 
 {
+	if ( tf_disable_player_shadows.GetBool() )
+		return SHADOWS_NONE;
+
 	// Removed the GetPercentInvisible - should be taken care off in BindProxy now.
 	if ( !IsVisible() /*|| GetPercentInvisible() > 0.0f*/ )
 		return SHADOWS_NONE;
@@ -3380,7 +3385,8 @@ bool C_TFPlayer::ShouldShowNemesisIcon()
 	{
 		bool bStealthed = m_Shared.InCond( TF_COND_STEALTHED );
 		bool bDisguised = m_Shared.InCond( TF_COND_DISGUISED );
-		if ( IsAlive() && !bStealthed && !bDisguised )
+		bool bTournamentHide = TFGameRules()->IsInTournamentMode() && tf_tournament_hide_domination_icons.GetBool();
+		if ( IsAlive() && !bStealthed && !bDisguised && !bTournamentHide )
 			return true;
 	}
 	return false;
