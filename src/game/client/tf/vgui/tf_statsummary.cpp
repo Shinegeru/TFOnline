@@ -82,6 +82,7 @@ CTFStatsSummaryPanel::CTFStatsSummaryPanel() : vgui::EditablePanel( NULL, "TFSta
 #else
 	m_pNextTipButton = new vgui::Button( this, "NextTipButton", "" );	
 	m_pCloseButton = new vgui::Button( this, "CloseButton", "" );	
+	m_pResetStatsButton = new vgui::Button( this, "ResetStatsButton", "" );	
 #endif
 
 	m_pBarChartComboBoxA->AddActionSignalTarget( this );
@@ -158,6 +159,10 @@ void CTFStatsSummaryPanel::OnCommand( const char *command )
 	else if ( 0 == Q_stricmp( command, "nexttip" ) )
 	{
 		UpdateTip();
+	}
+	else if ( 0 == Q_stricmp( command, "resetstatsbutton" ) )
+	{
+		engine->ClientCmd( "resetplayerstats" );
 	}
 
 	BaseClass::OnCommand( command );
@@ -523,6 +528,7 @@ void CTFStatsSummaryPanel::UpdateControls()
 #ifndef _X360
 	m_pNextTipButton->SetVisible( m_bInteractive );
 	m_pCloseButton->SetVisible( m_bInteractive );
+	m_pResetStatsButton->SetVisible( m_bInteractive );
 #endif
 }
 

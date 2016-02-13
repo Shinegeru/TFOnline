@@ -73,6 +73,7 @@ private:
 #else
 	vgui::Button *m_pNextTipButton;
 	vgui::Button *m_pCloseButton;
+	vgui::Button *m_pResetStatsButton;
 #endif
 
 	bool m_bInteractive;							// are we in interactive mode
